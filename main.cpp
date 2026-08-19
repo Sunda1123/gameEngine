@@ -1,46 +1,106 @@
-//💩 gameEngine —— 2D 游戏引擎（独立项目）
-//   方向：地图 + 移动 → 射击+对象池 → 敌人+碰撞 → 丧尸末世
-//   当前：最小 SDL3 窗口骨架（起点）
-//   编译（等复制 SDL3 SDK 后）：
-//   g++ main.cpp -o game.exe -I "SDL3-3.4.14/x86_64-w64-mingw32/include" -L "SDL3-3.4.14/x86_64-w64-mingw32/lib" -lSDL3
 #include <SDL3/SDL.h>
 #include <iostream>
+#include "Map.h"
 
 int main(int argc, char* argv[]) {
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
-        std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
+    //  初始化 SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        SDL_Log("SDL 初始化失败: %s", SDL_GetError());
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("2D Game", 800, 600, SDL_WINDOW_RESIZABLE);
+
+
+
+    // 创建窗口
+    SDL_Window* window = SDL_CreateWindow("地图加载示例", 800, 600, SDL_WINDOW_RESIZABLE);
     if (!window) {
-        std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
+        SDL_Log("窗口创建失败: %s", SDL_GetError());
         SDL_Quit();
         return 1;
     }
 
+
+
+
+
+    // 创建渲染器
     SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
     if (!renderer) {
-        std::cerr << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
+        SDL_Log("渲染器创建失败: %s", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
         return 1;
     }
 
-    bool quit = false;
-    SDL_Event event;
-    while (!quit) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) quit = true;
-        }
-        //💩 清屏
-        SDL_SetRenderDrawColor(renderer, 20, 20, 30, 255);
-        SDL_RenderClear(renderer);
-        SDL_RenderPresent(renderer);
+
+
+
+
+    // 定义 Map 对象
+    Map map;
+
+
+
+
+
+    //加载地图 JSON
+    if (!map.loadFromJson("filepath.json")) {
+        SDL_Log("地图加载失败！请检查 filename.json 是否存在。");
+        return 1;
     }
 
+
+
+
+    // 游戏主循环标志
+    int running = 1;
+    SDL_Event event;
+    while (running) {
+        // 处理事件
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_EVENT_QUIT) {
+                running = 0;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        //绘制流程开始
+
+        // 清屏
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // 渲染地图
+        map.render(renderer);
+
+        //显示到屏幕
+        SDL_RenderPresent(renderer);
+        
+        // 控制帧率
+        SDL_Delay(16);
+    }
+
+
+
+
+
+
+
+    // 清理资源
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+
     return 0;
 }
+

@@ -1,0 +1,18 @@
+# 编译产物
+*.exe
+*.o
+*.obj
+
+# SDL 运行库
+*.dll
+
+# SDL3 SDK（如复制到项目里也忽略）
+SDL3-3.4.14/
+
+# 存档文件
+save.json
+save.txt
+
+# 系统
+Thumbs.db
+.DS_Store
