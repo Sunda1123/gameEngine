@@ -1,29 +1,33 @@
 #pragma once
 #include <SDL3/SDL.h>
 
-enum class TowerType { Arrow, Cannon, Magic, Ice };
+enum class TowerType { Arrow, Cannon, Magic, Ice ,Tar};
 
 class Tower {
 public:
     Tower(TowerType type, float x, float y);
-    virtual ~Tower();
-    virtual void update(float dt);
-    virtual void attack() = 0;
-    void upgrade();
-    bool canFire() const;
-    void resetCooldown();
+    virtual ~Tower();                 //virtual析构对应Tower
+    virtual void update(float dt);                          //帧率（u 跟 v能不能四啊，率跟陆💩）
+    virtual void attack() = 0;        //attack的动作纯虚
+    void upgrade();            //升级
+    bool canFire() const;      //能不能开火，不能整成无限火力卡死我
+    void resetCooldown();          //重置攻击冷却
 
 
-
-    const SDL_FPoint& getPos() const { return pos; }
-    TowerType getType() const { return type; }
-    float getDamage() const { return damage; }
-    float getRange() const { return range; }
-    int getLevel() const { return level; }
-    float getCooldown() const;
-    float getSlowFactor() const { return slowFactor; }
-
-protected:
+    const SDL_FPoint& getPos() const { return pos; }     //拿坐标
+    TowerType getType() const { return type; }        //拿防御塔类型
+    float getDamage() const { return damage; }         //取攻击伤害，灌灌伤，骗骗花
+    float getRange() const { return range; }             //拿射程
+    int getLevel() const { return level; }               //获取当前等级
+    float getCooldown() const;                     //看剩余冷却，给UI留着用，哪怕画个攻击冷却条呢
+    float getSlowFactor() const { return slowFactor; }         //拿减速比例，给特殊塔用
+    float getDamageOverTime() const {return damageOverTime; }    //拿持续伤害，给持续伤害塔
+    float getBurDuration() const {return burDuration; }   //持续伤害时间
+    
+    //后边加眩晕，感电（跟链表似的伤害传递但逐级递减）
+    
+    
+    protected:
     void initStats();
 
     TowerType type;
@@ -33,7 +37,9 @@ protected:
     float cooldown{};
     float fireRate{};
     float slowFactor{};
+    float damageOverTime{};
     int level{};
+    float burDuration{};
 };
 
 
@@ -41,31 +47,35 @@ protected:
 
 //塔类型和每个塔的功能
 
-class ArrowTower : public Tower {
+class ArrowTower : public Tower {//箭
 public:
     ArrowTower(float x, float y);
     void attack() override;
 };
 
-class CannonTower : public Tower {
+class CannonTower : public Tower {//炮
 public:
     CannonTower(float x, float y);
     void attack() override;
 };
 
-class MagicTower : public Tower {
+class MagicTower : public Tower {//法
 public:
     MagicTower(float x, float y);
     void attack() override;
 };
 
-class IceTower : public Tower {
+class IceTower : public Tower {//冰
 public:
     IceTower(float x, float y);
     void attack() override;
 };
 
-
+class TarTower : public Tower {
+public:
+    TarTower(float x,float y);
+    void attack() override;
+};
 
 /*
 class Target
