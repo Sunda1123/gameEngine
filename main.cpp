@@ -1,5 +1,4 @@
 #include <SDL3/SDL.h>
-#include <iostream>
 #include "Map.h"
 
 int main(int argc, char* argv[]) {
