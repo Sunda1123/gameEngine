@@ -24,7 +24,8 @@ public:
     float getDamageOverTime() const {return damageOverTime; }    //拿持续伤害，给持续伤害塔
     float getBurDuration() const {return burDuration; }   //持续伤害时间
     
-    //后边加眩晕，感电（跟链表似的伤害传递但逐级递减）
+    //后边加眩晕，感电（跟链表似的伤害传递但逐级递减），这一加东西Monster那边也得跟着动
+    
     
     
     protected:

@@ -1,8 +1,12 @@
 #include "Tower.h"
 
 
-Tower::Tower(TowerType type, float x, float y)
-    : type(type), pos{x, y}, cooldown(0.f), level(1), slowFactor(0.f)
+Tower::Tower(TowerType type, float x, float y)    //构造函数格式还没摸透，到时候啃书吧
+    : type(type),
+    pos{x, y},
+    cooldown(0.f),
+    level(1),
+     slowFactor(0.f)
 {
     initStats();
 }
