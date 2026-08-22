@@ -1,0 +1,89 @@
+SDL3 常用函数速查表(MD怎么这么多)
+
+【1. 初始化与应用管理】
+
+· SDL_Init：初始化SDL库，需传入子系统标志（如 SDL_INIT_VIDEO）。
+· SDL_Quit：清理所有已初始化的子系统并退出SDL。
+· SDL_AppInit / SDL_AppEvent / SDL_AppIterate / SDL_AppQuit：SDL3 主推的“回调模式”四大核心函数，替代传统的 main + 游戏循环。
+· SDL_SetAppMetadata：在初始化前设置应用的元数据（名称、版本等）。
+
+【2. 窗口管理】
+
+· SDL_CreateWindow：创建窗口（标题、尺寸、标志）。
+· SDL_DestroyWindow：销毁窗口并释放资源。
+· SDL_GetWindowSize / SDL_SetWindowSize：获取或设置窗口大小。
+· SDL_MinimizeWindow / SDL_MaximizeWindow：最小化或最大化窗口。
+
+【3. 2D 渲染】
+
+· SDL_CreateRenderer：为窗口创建2D渲染上下文。
+· SDL_DestroyRenderer：销毁渲染器。
+· SDL_RenderClear：用指定颜色清除当前渲染目标。
+· SDL_RenderPresent：将绘制内容更新到屏幕（翻页）。
+· SDL_RenderFillRect：填充矩形区域。
+
+【4. 事件处理】
+
+· SDL_PollEvent：轮询获取下一个待处理事件（主循环推荐）。
+· SDL_WaitEvent：等待直到有事件发生（阻塞）。
+· SDL_PumpEvents：主动收集输入设备事件放入队列。
+· SDL_SetEventFilter / SDL_AddEventWatch：设置事件过滤器或监视器。
+
+【5. 音频】
+
+· SDL_OpenAudioDeviceStream：SDL3 推荐函数，同时打开设备、创建流并绑定。
+· SDL_PutAudioStreamData / SDL_GetAudioStreamData：向流添加或获取音频数据。
+· SDL_ClearAudioStream / SDL_DestroyAudioStream：清空或销毁音频流。
+· SDL_PauseAudioDevice：暂停或恢复音频设备。
+
+【6. 输入设备（部分）】
+
+· Gamepad：SDL_AddGamepadMapping、SDL_GetGamepadState。
+· Mouse：SDL_GetMouseState、SDL_SetRelativeMouseMode。
+· Keyboard：SDL_GetKeyboardState、SDL_GetKeyFromScancode。
+
+【7. 实用工具】
+
+· 计时：SDL_GetTicks。
+· 内存/字符串：SDL_malloc、SDL_strlen。
+· 错误处理：SDL_GetError / SDL_ClearError。
+
+【8. 纹理与表面操作（2D进阶）】
+
+· 涉及 SDL_CreateTexture（从表面或像素数据创建纹理）、SDL_Surface 系列（CPU端图像处理）、以及 SDL_UpdateTexture（更新纹理数据）。之前只提了画矩形，没提贴图。
+
+【9. GPU 渲染与着色器（全新模块）】
+
+· SDL3 新增了独立的 <SDL3/SDL_gpu.h> 模块（基于现代图形API）。包含 SDL_GPU_CreateDevice、SDL_GPU_CreateShaderModule、SDL_GPU_BeginRenderPass 等。之前完全没提到，这是SDL3最大的性能更新点。
+
+【10. 属性系统（SDL3 新特性）】
+
+· SDL3 引入了 SDL_PropertiesID 类型用于动态对象元数据管理。相关函数如 SDL_CreateProperties、SDL_SetProperty、SDL_GetProperty，之前未提及。
+
+【11. IO流与文件系统】
+
+· 现代化的文件读写接口，替代标准的 fopen。包含 SDL_IOStream 系列（如 SDL_IOFromFile、SDL_ReadIO、SDL_WriteIO）以及路径相关函数（SDL_GetBasePath）。
+
+【12. 原生对话框】
+
+· 调用操作系统原生界面。包含 SDL_ShowOpenFileDialog（打开文件）、SDL_ShowSaveFileDialog（保存文件）和 SDL_ShowMessageBox（消息框），之前未提及。
+
+【13. 线程、锁与原子操作】
+
+· 多线程支持。包含 SDL_CreateThread、SDL_LockMutex、SDL_CondWait 以及原子操作函数（SDL_AtomicGet 等）。
+
+【14. 触摸、手势与笔输入】
+
+· 移动端和平板支持。包含触摸事件（SDL_Event 中的 tfinger 类型）、手势识别（SDL_RecordGesture）以及手写笔压力/倾斜角度获取。
+
+【15. 传感器与HID设备】
+
+· 读取硬件传感器数据（加速度计、陀螺仪），包含 SDL_Sensor 系列函数。以及底层人机交互设备（HID）的读写接口。
+
+【16. 剪贴板与拖放】
+
+· 系统剪贴板文本操作（SDL_SetClipboardText / SDL_GetClipboardText）以及文件拖放事件处理（SDL_DropEvent）。
+
+【17. 日志记录与断言】
+
+· 调试辅助工具。包含 SDL_Log（支持优先级分类）、SDL_LogError 以及 SDL_Assert 断言系列宏。
