@@ -4,6 +4,22 @@
 enum class TowerType { Arrow, Cannon, Magic, Ice ,Tar};
 
 class Tower {
+
+    protected:
+    void initStats();
+
+    TowerType type;
+    SDL_FPoint pos;
+    float damage{};
+    float range{};
+    float cooldown{};
+    float fireRate{};
+    float slowFactor{};
+    float damageOverTime{};
+    int level{};
+    float burDuration{};
+
+    
 public:
     Tower(TowerType type, float x, float y);
     virtual ~Tower();                 //virtual析构对应Tower
@@ -25,22 +41,6 @@ public:
     float getBurDuration() const {return burDuration; }   //持续伤害时间
     
     //后边加眩晕，感电（跟链表似的伤害传递但逐级递减），这一加东西Monster那边也得跟着动
-    
-    
-    
-    protected:
-    void initStats();
-
-    TowerType type;
-    SDL_FPoint pos;
-    float damage{};
-    float range{};
-    float cooldown{};
-    float fireRate{};
-    float slowFactor{};
-    float damageOverTime{};
-    int level{};
-    float burDuration{};
 };
 
 

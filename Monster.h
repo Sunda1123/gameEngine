@@ -5,6 +5,17 @@
 enum class MonsterType {ORDINARY , TANK , FAST , SPLIT ,BOM , POISON  };//暂时不知道再加点什么
 class Monster
 {
+protected:
+
+    void initStats();          //初始化怪物类型和初始数据💩（到现在我都想不出来该给怪一个什么形象）
+    MonsterType type;
+    SDL_FPoint pos;          // 当前坐标
+    float hp;                // 当前血量  （这色盘真难使，还得让我自己填数试）
+    float maxHp;             // 最大血量（用来给SDL3画血条，依旧狗屎色盘）
+    float baseSpeed;         // 原始速度，🚑减速结束后恢复到这个值
+    float speed;             // 当前速度 
+    int currentWaypoint;     // 下一个目标路点的索引（0 是出生点，初始指向 1）
+    float slowTimer;         // 减速剩余时间（秒），> 0 说明正在被减速
 
 public:
     Monster(MonsterType type, float x, float y);
@@ -22,21 +33,6 @@ public:
     float getSpeed() const { return speed; }
     MonsterType getType() const { return type; }
     int getWaypointIndex() const { return currentWaypoint; }
-
-
-protected:
-
-    void initStats();          //初始化怪物类型和初始数据💩（到现在我都想不出来该给怪一个什么形象）
-    MonsterType type;
-    SDL_FPoint pos;          // 当前坐标
-    float hp;                // 当前血量  （这色盘真难使，还得让我自己填数试）
-    float maxHp;             // 最大血量（用来给SDL3画血条，依旧狗屎色盘）
-    float baseSpeed;         // 原始速度，🚑减速结束后恢复到这个值
-    float speed;             // 当前速度 
-    int currentWaypoint;     // 下一个目标路点的索引（0 是出生点，初始指向 1）
-    float slowTimer;         // 减速剩余时间（秒），> 0 说明正在被减速
-
-
 };
 
 
