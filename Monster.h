@@ -18,6 +18,7 @@ protected:
     float slowTimer;         // 减速剩余时间（秒），> 0 说明正在被减速
 
 public:
+    Monster();                                  // 默认构造：先占位（GameUI 成员要用）
     Monster(MonsterType type, float x, float y);
     virtual ~Monster(); 
     //后边再加怪可以攻击塔

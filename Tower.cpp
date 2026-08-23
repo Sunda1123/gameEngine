@@ -1,7 +1,7 @@
 #include "Tower.h"
 
 
-Tower::Tower(TowerType type, float x, float y)    //构造函数格式还没摸透，到时候啃书吧
+Tower::Tower(TowerType type, float x, float y)   //侯捷P39可以回顾构造函数，赋初始值，建立类的不变量
     : type(type),
     pos{x, y},
     cooldown(0.f),
@@ -15,7 +15,7 @@ Tower::~Tower() = default; //析构调用
 
 
 
-void Tower::update(float dt) {         //
+void Tower::update(float dt) {
     if (cooldown > 0.f) cooldown -= dt;
 }
 
@@ -25,6 +25,7 @@ void Tower::upgrade() {
     range *= 1.05f;
     damageOverTime *= 1.2f;
     burDuration *= 1.1f;
+    slowFactor *=1.1f;
 }
 
 bool Tower::canFire() const {

@@ -2,6 +2,17 @@
 #include<cmath>
 
 
+// 默认构造：先造一只普通怪占位（GameUI 里 monster 成员要先有个默认模样）
+Monster::Monster()
+    : type(MonsterType::ORDINARY),
+      pos{0.0f, 0.0f},
+      currentWaypoint(0),
+      slowTimer(0.f)
+{
+    initStats();
+}
+
+
 Monster::Monster(MonsterType type, float x, float y)
     : type(type),               //这冒号，没学明白
       pos{x, y},

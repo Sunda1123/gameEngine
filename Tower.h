@@ -21,7 +21,7 @@ class Tower {
 
     
 public:
-    Tower(TowerType type, float x, float y);
+    explicit Tower(TowerType type, float x, float y);        //explicit防止构造函数进行隐式转换，虽然三参没必要，但加上更严谨
     virtual ~Tower();                 //virtual析构对应Tower
     virtual void update(float dt);                          //帧率（u 跟 v能不能四啊，率跟陆💩）
     virtual void attack() = 0;        //attack的动作纯虚
