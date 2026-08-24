@@ -15,9 +15,37 @@ Tower::~Tower() = default; //析构调用
 
 
 
+Monster* Tower::findTarget(const std::vector<Monster*>& monsters) {
+    float best = range * range;
+    Monster* target = nullptr;
+
+    SDL_FPoint tp = Tower::getPos();  // 塔自己的位置
+
+    for (auto m : monsters) {
+        //活着的怪才打
+        if (m->getHp() <= 0) continue;
+
+        //勾股定理算距离
+        SDL_FPoint mp = m->getPos();
+        float dx = mp.x - tp.x;
+        float dy = mp.y - tp.y;
+        float dist = dx * dx + dy * dy;
+
+        if (dist < best) {
+            best = dist;
+            target = m;
+        }
+    }
+    return target;
+}
+
+
+
 void Tower::update(float dt) {
     if (cooldown > 0.f) cooldown -= dt;
 }
+
+
 
 void Tower::upgrade() {
     level++;
@@ -28,13 +56,19 @@ void Tower::upgrade() {
     slowFactor *=1.1f;
 }
 
+
+
 bool Tower::canFire() const {
     return cooldown <= 0.f;
 }
 
+
+
 void Tower::resetCooldown() {
     cooldown = fireRate;
 }
+
+
 
 float Tower::getCooldown() const {
     return cooldown;

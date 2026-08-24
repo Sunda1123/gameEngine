@@ -1,5 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
+#include <vector>
+#include "Monster.h"
 
 enum class TowerType { Arrow, Cannon, Magic, Ice ,Tar};
 
@@ -39,8 +41,10 @@ public:
     float getSlowFactor() const { return slowFactor; }         //拿减速比例，给特殊塔用
     float getDamageOverTime() const {return damageOverTime; }    //拿持续伤害，给持续伤害塔
     float getBurDuration() const {return burDuration; }   //持续伤害时间
+    //后边加眩晕，感电（跟链表似的伤害传递但逐级递减），这一加东西Monster那边也得跟着动    
     
-    //后边加眩晕，感电（跟链表似的伤害传递但逐级递减），这一加东西Monster那边也得跟着动
+    Monster* findTarget(const std::vector<Monster*>& monsters);//索敌，找Monster里边的最近的怪
+
 };
 
 
