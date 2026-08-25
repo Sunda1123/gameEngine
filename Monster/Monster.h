@@ -1,13 +1,12 @@
 #pragma once
 #include <SDL3/SDL.h>
-#include<vector>
+#include <vector>
 
 enum class MonsterType {ORDINARY , TANK , FAST , SPLIT ,BOM , POISON  };//暂时不知道再加点什么
 class Monster
 {
 protected:
 
-    void initStats();          //初始化怪物类型和初始数据💩（到现在我都想不出来该给怪一个什么形象）
     MonsterType type;
     SDL_FPoint pos;          // 当前坐标
     float hp;                // 当前血量  （这色盘真难使，还得让我自己填数试）
@@ -48,35 +47,5 @@ struct StatusEffect {
 };
 
 
-/*    留着写怪的特殊功能，到时候顺便把怪的伤害和范围补上，到后期吧，伤害和范围到后期补上，因为还得给塔加单独血条要不
-class Monster : public Monster {//普通
-public:
-
-};
-
-class Monster : public Monster {//坦克
-public:
-
-};
-
-class Monster : public Monster {//速度
-public:
-
-};
-
-class Monster : public Monster {//分裂
-public:
-
-};
-
-class Monster : public Monster {//爆炸
-public:
-
-};
-
-class Monster : public Monster {//毒
-public:
-
-};
-
-*/
+// 每种怪一个独立文件（KingdomRush 风格）：
+// OrdinaryMonster / TankMonster / FastMonster / SplitMonster / BomMonster / PoisonMonster

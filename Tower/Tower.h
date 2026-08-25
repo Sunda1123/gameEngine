@@ -1,14 +1,13 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <vector>
-#include "Monster.h"
+#include "../Monster/Monster.h"
 
 enum class TowerType { Arrow, Cannon, Magic, Ice ,Tar};
 
 class Tower {
 
     protected:
-    void initStats();
 
     TowerType type;
     SDL_FPoint pos;
@@ -50,37 +49,17 @@ public:
 
 
 
-//塔类型和每个塔的功能
+// 每种塔一个独立文件（KingdomRush 风格）
 
-class ArrowTower : public Tower {//箭
-public:
-    ArrowTower(float x, float y);
-    void attack() override;
-};
 
-class CannonTower : public Tower {//炮
-public:
-    CannonTower(float x, float y);
-    void attack() override;
-};
 
-class MagicTower : public Tower {//法
-public:
-    MagicTower(float x, float y);
-    void attack() override;
-};
 
-class IceTower : public Tower {//冰
-public:
-    IceTower(float x, float y);
-    void attack() override;
-};
 
-class TarTower : public Tower {
-public:
-    TarTower(float x,float y);
-    void attack() override;
-};
+
+
+
+
+
 
 /*
 class Target

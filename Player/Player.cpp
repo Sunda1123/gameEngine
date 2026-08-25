@@ -1,6 +1,8 @@
 #include "Player.h"
-#include "Monster.h"
-#include "Map.h"
+#include "../Tower/ArrowTower.h"
+#include "../Monster/OrdinaryMonster.h"
+#include "../Monster/Monster.h"
+#include "../Map/Map.h"
 #include <vector>
 #include <SDL3/SDL.h>
 
@@ -36,6 +38,6 @@ bool Player::spawnMonster(float x, float y) {
     if (gold < cost) return false;
 
     gold -= cost;
-    monster.push_back(new Monster(MonsterType::ORDINARY, x, y));
+    monster.push_back(new OrdinaryMonster(x, y));
     return true;
 }

@@ -1,4 +1,4 @@
-#include "gameUI.h"
+#include "UI/gameUI.h"
 
 int main(int argc, char* argv[]) {
     GameUI game;   // 构造：自动开机（SDL/窗口/渲染器/地图/怪）

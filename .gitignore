@@ -3,6 +3,9 @@
 *.o
 *.obj
 
+# 构建目录
+build/
+
 # SDL 运行库
 *.dll
 

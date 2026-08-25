@@ -1,5 +1,5 @@
-#include"Monster.h"
-#include<cmath>
+#include "Monster.h"
+#include <cmath>
 
 
 // 默认构造：先造一只普通怪占位（GameUI 里 monster 成员要先有个默认模样）
@@ -9,7 +9,8 @@ Monster::Monster()
       currentWaypoint(0),
       slowTimer(0.f)
 {
-    initStats();
+    // 默认造一只普通怪（数值和 OrdinaryMonster 一致）
+    hp = 100.f; maxHp = 100.f; baseSpeed = 60.f; speed = 60.f;
 }
 
 
@@ -19,7 +20,7 @@ Monster::Monster(MonsterType type, float x, float y)
       currentWaypoint(0),      // 出生点，从第 0 个路标出发
       slowTimer(0.f)       // 初始没减速
 {
-    initStats();
+    // 具体数值由派生类构造函数设置（KingdomRush 风格）
 }
 
 
@@ -79,38 +80,16 @@ void Monster::update(float dt,const std::vector<SDL_FPoint>& path) {     //运�
 }
 
 
-void Monster::initStats() {
-    switch (type) {
-        case MonsterType::ORDINARY:
-            hp = 100.f; maxHp = 100.f; baseSpeed = 60.f; speed = 60.f;
-            break;
-        case MonsterType::TANK:
-            hp = 300.f; maxHp = 300.f; baseSpeed = 40.f; speed = 40.f;
-            break;
-        case MonsterType::FAST:
-            hp = 60.f; maxHp = 60.f; baseSpeed = 120.f; speed = 120.f;
-            break;
-        case MonsterType::SPLIT:
-            hp = 80.f; maxHp = 80.f; baseSpeed = 70.f; speed = 70.f;
-            break;
-        case MonsterType::BOM:
-            hp = 70.f; maxHp = 70.f; baseSpeed = 55.f; speed = 55.f;
-            break;
-         case MonsterType::POISON:
-            hp = 90.f; maxHp = 90.f; baseSpeed = 65.f; speed = 65.f;
-            break;
-            
-            
-            
-         /*         留一个复制用的
-            case MonsterType::
-        
-            break;
-            */
-        }
+// 各怪数值已拆到各自派生类构造函数
+
+void Monster::takeDamage(float amount)
+{
+    hp -= amount;
+    if (hp < 0) hp = 0;
 }
 
 
-
-
-//后边补一个怪的特殊能力，情况有点复杂，不太好改
+void Monster::applySlow(float factor, float duration) {
+    speed = baseSpeed * factor;
+    slowTimer = duration;
+}

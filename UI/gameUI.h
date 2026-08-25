@@ -1,8 +1,8 @@
 #pragma once
 #include <SDL3/SDL.h>
-#include "Map.h"
-#include "Monster.h"
-#include "Player.h"
+#include "../Map/Map.h"
+#include "../Monster/Monster.h"
+#include "../Player/Player.h"
 
 // ============================================
 // GameUI：把"一帧游戏"打包成一个类

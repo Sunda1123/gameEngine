@@ -1,4 +1,5 @@
 #include "gameUI.h"
+#include "../Monster/OrdinaryMonster.h"
 #include <cstdlib>   // exit()
 
 
@@ -105,15 +106,14 @@ GameUI::GameUI() {
     }
 
     //  加载地图
-    if (!map.loadFromJson("filepath.json")) {
-        SDL_Log("地图加载失败！请检查 filepath.json 是否存在。");
+    if (!map.loadFromJson("data/filepath.json")) {
+        SDL_Log("地图加载失败！请检查 data/filepath.json 是否存在。");
         exit(1);
     }
 
     //  创建怪物（⚡ 以后改成鼠标点按钮创建）
-    monsters.push_back(new Monster(MonsterType::ORDINARY,
-                                   map.getPath()[0].x,
-                                   map.getPath()[0].y));
+    monsters.push_back(new OrdinaryMonster(map.getPath()[0].x,
+                                           map.getPath()[0].y));
 
     running = true;
     baseHealth = 100;

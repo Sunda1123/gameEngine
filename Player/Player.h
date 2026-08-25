@@ -1,7 +1,7 @@
-#include<vector>
-#include "MAp.h"
-#include "Tower.h"
-#include "Monster.h"
+#include <vector>
+#include "../Map/Map.h"
+#include "../Tower/Tower.h"
+#include "../Monster/Monster.h"
 
 
 class Player{
