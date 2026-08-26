@@ -15,7 +15,7 @@ public:
     Player();
     ~Player();
     std::vector<Tower*> towers;
-    std::vector<Monster*> monster;
+    std::vector<Monster*> monsters;
 
     bool placeTower(float x, float y);        // 花钱放塔
     bool spawnMonster(float x , float y );             // 花钱放怪

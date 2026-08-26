@@ -4,17 +4,13 @@
 #include "../Monster/Monster.h"
 #include "../Player/Player.h"
 
-// ============================================
-// GameUI：把"一帧游戏"打包成一个类
-// 以前这些变量散在 main 里 → 现在全是类的成员
-// ============================================
+
 class GameUI {
 private:
     SDL_Window*   window;     // 窗口
     SDL_Renderer* renderer;   // 渲染器
     Map           map;        // 地图
-    std::vector<Tower*> towers;  //塔
-    std::vector<Monster*> monsters;   //怪
+    Player        player;     // 玩家：放塔/放怪都喊它（创建具体类收在 Player 里，GameUI 只依赖基类）
     bool          running;    // 游戏还跑不跑
     int           baseHealth; // 基地血量（以后接 Player 就用 player 的）⚡⚡⚡⚡
 

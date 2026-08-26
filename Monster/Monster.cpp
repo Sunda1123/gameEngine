@@ -89,7 +89,4 @@ void Monster::takeDamage(float amount)
 }
 
 
-void Monster::applySlow(float factor, float duration) {
-    speed = baseSpeed * factor;
-    slowTimer = duration;
-}
+ 

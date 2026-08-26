@@ -1,5 +1,4 @@
 #include "gameUI.h"
-#include "../Monster/OrdinaryMonster.h"
 #include <cstdlib>   // exit()
 
 
@@ -31,7 +30,7 @@ void drawHealthBar(SDL_Renderer* renderer, int x, int y, int w, int h, float hpP
 
     // 3. 可选：画个边框
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);    // 白色
-    SDL_RenderRect(renderer, &bgRect);   // ← SDL3 里画边框用这个
+    SDL_RenderRect(renderer, &bgRect);   // ← SDL3画边框
 }
 
 
@@ -111,9 +110,11 @@ GameUI::GameUI() {
         exit(1);
     }
 
-    //  创建怪物（⚡ 以后改成鼠标点按钮创建）
-    monsters.push_back(new OrdinaryMonster(map.getPath()[0].x,
-                                           map.getPath()[0].y));
+    //  放测试怪 + 测试塔（⚡⚡⚡🐲⚡⚡⚡ 以后改成鼠标点按钮创建）
+    player.spawnMonster(map.getPath()[0].x, map.getPath()[0].y);
+    // 路径中间放座箭塔，测试塔打怪
+    const auto& path = map.getPath();
+    player.placeTower(path[path.size() / 2].x, path[path.size() / 2].y);
 
     running = true;
     baseHealth = 100;
@@ -124,8 +125,7 @@ GameUI::GameUI() {
 
 //析构函数（关机
 GameUI::~GameUI() {
-    for (auto t : towers) delete t;
-    for (auto m : monsters) delete m;
+    // ⚠️ 塔和怪由 Player 析构统一清理，这里别重复 delete（防双重释放）
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -139,7 +139,7 @@ GameUI::~GameUI() {
 void GameUI::run() {
     SDL_Event event;
     while (running) {
-        // ① 处理事件
+        // 处理事件
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
                 running = false;
@@ -148,14 +148,34 @@ void GameUI::run() {
 
         //让怪沿路径走
         float dt = 0.016f;                     // 1/60 秒每帧
-        for (auto m : monsters) {
+        for (auto m : player.monsters) {
             m->update(dt, map.getPath());
+        }
+
+        // 塔打怪：每座塔冷却好了就索敌开火
+        for (auto t : player.towers) {
+            t->update(dt);                     // 冷却倒数
+            if (t->canFire()) {
+                Monster* target = t->findTarget(player.monsters);  // 索敌
+                if (target) {
+                    target->takeDamage(t->getDamage());
+                    t->resetCooldown();
+                }
+            }
+        }
+
+        // 清理死掉的怪（倒着删，避免迭代器失效）
+        for (int i = (int)player.monsters.size() - 1; i >= 0; i--) {
+            if (player.monsters[i]->getHp() <= 0) {
+                delete player.monsters[i];
+                player.monsters.erase(player.monsters.begin() + i);
+            }
         }
 
         // 到终点扣基地血
         // ⚠️ 现在怪到终点后每帧都会扣血；
         //    等做"多怪 + 到终点移除"时改成：扣一次就移除
-        for (auto m : monsters) {
+        for (auto m : player.monsters) {
             if (m->hasReachedEnd(map.getPath())) {
                 --baseHealth;
                 if (baseHealth < 0) baseHealth = 0;
@@ -168,8 +188,16 @@ void GameUI::run() {
 
         map.render(renderer);
 
+        // 画塔（蓝色方块）
+        for (auto t : player.towers) {
+            SDL_FPoint p = t->getPos();
+            SDL_SetRenderDrawColor(renderer, 50, 100, 255, 255);
+            SDL_FRect rect = { p.x - 10, p.y - 10, 20, 20 };
+            SDL_RenderFillRect(renderer, &rect);
+        }
+
         // 画怪（红色方块）
-        for (auto m : monsters) {
+        for (auto m : player.monsters) {
             SDL_FPoint p = m->getPos();
             SDL_SetRenderDrawColor(renderer, 220, 50, 50, 255);
             SDL_FRect rect = { p.x - 8, p.y - 8, 16, 16 };

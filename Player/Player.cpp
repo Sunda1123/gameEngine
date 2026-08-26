@@ -20,7 +20,7 @@ void Player::initStats() {
                                     //🐬这点得把那点塔和怪的数据写表带过来
 Player::~Player() {
     for (Tower* t : towers) delete t;
-    for (Monster* m : monster) delete m;
+    for (Monster* m : monsters) delete m;
 }
 
 
@@ -38,6 +38,6 @@ bool Player::spawnMonster(float x, float y) {
     if (gold < cost) return false;
 
     gold -= cost;
-    monster.push_back(new OrdinaryMonster(x, y));
+    monsters.push_back(new OrdinaryMonster(x, y));
     return true;
 }
