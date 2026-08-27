@@ -82,8 +82,9 @@ void Button::Render(SDL_Renderer* r) {
 
 
 
-//⚡构造函数（开机）
-GameUI::GameUI() {
+//⚡构造函数（开机）             好麻烦。这一块还是太缺经验了，没人带干事还是太难了，处处碰壁
+GameUI::GameUI() : placeTowerBtn({650, 20, 120, 40}), spawnMonsterBtn({650, 70, 120, 40}) {
+
     //  初始化 SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL 初始化失败: %s", SDL_GetError());
@@ -109,12 +110,8 @@ GameUI::GameUI() {
         SDL_Log("地图加载失败！请检查 data/filepath.json 是否存在。");
         exit(1);
     }
-
-    //  放测试怪 + 测试塔（⚡⚡⚡🐲⚡⚡⚡ 以后改成鼠标点按钮创建）
-    player.spawnMonster(map.getPath()[0].x, map.getPath()[0].y);
-    // 路径中间放座箭塔，测试塔打怪
-    const auto& path = map.getPath();
-    player.placeTower(path[path.size() / 2].x, path[path.size() / 2].y);
+    placeTowerBtn.setRect({650, 20, 120, 40});    // 放塔按钮
+    spawnMonsterBtn.setRect({650, 70, 120, 40});  // 放怪按钮
 
     running = true;
     baseHealth = 100;

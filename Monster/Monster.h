@@ -21,6 +21,7 @@ public:
     Monster(MonsterType type, float x, float y);
     virtual ~Monster(); 
     //后边再加怪可以攻击塔
+    virtual void onDeath();   // 死的时候调用，默认啥也不做
     virtual void update(float dt, const std::vector<SDL_FPoint>& path);   //帧调用减速时间，与当前点和方向
     void takeDamage(float amount);        //受到伤害
     void applySlow(float factor, float duration); //减速，被减速时调用
