@@ -1,5 +1,5 @@
 #include "Monster.h"
-#include <cmath>
+#include <cmath>   // sqrt 用（显式包含，别靠间接）
 
 
 // 默认构造：先造一只普通怪占位（GameUI 里 monster 成员要先有个默认模样）
@@ -14,8 +14,8 @@ Monster::Monster()
 }
 
 
-Monster::Monster(MonsterType type, float x, float y)
-    : type(type),               //这冒号，没学明白
+Monster::Monster(MonsterType type, float x, float y)    //重载，两个Monster调用时二选一
+    : type(type),
       pos{x, y},
       currentWaypoint(0),      // 出生点，从第 0 个路标出发
       slowTimer(0.f)       // 初始没减速
@@ -66,8 +66,8 @@ void Monster::update(float dt,const std::vector<SDL_FPoint>& path) {     //运�
 
     float dx = target.x - pos.x;               //方向
     float dy = target.y - pos.y;
-    float dist = sqrt(dx * dx + dy * dy);
-    float step = speed * dt;
+    float dist = sqrt(dx * dx +dy * dy);
+    float step = speed * dt ;
 
     if (dist <= step) {            // 这帧能到
         pos = target;
@@ -86,6 +86,10 @@ void Monster::takeDamage(float amount)
 {
     hp -= amount;
     if (hp < 0) hp = 0;
+}
+
+void Monster::onDeath() {
+    // 默认：死了就没了。特殊怪（分裂/爆炸/毒）以后 override 这里
 }
 
 

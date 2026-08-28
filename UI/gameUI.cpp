@@ -79,11 +79,8 @@ void Button::Render(SDL_Renderer* r) {
 
 
 
-
-
-
 //⚡构造函数（开机）             好麻烦。这一块还是太缺经验了，没人带干事还是太难了，处处碰壁
-GameUI::GameUI() : placeTowerBtn({650, 20, 120, 40}), spawnMonsterBtn({650, 70, 120, 40}) {
+GameUI::GameUI() {
 
     //  初始化 SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -113,6 +110,7 @@ GameUI::GameUI() : placeTowerBtn({650, 20, 120, 40}), spawnMonsterBtn({650, 70, 
     placeTowerBtn.setRect({650, 20, 120, 40});    // 放塔按钮
     spawnMonsterBtn.setRect({650, 70, 120, 40});  // 放怪按钮
 
+
     running = true;
     baseHealth = 100;
 }
@@ -135,14 +133,23 @@ GameUI::~GameUI() {
 //主循环
 void GameUI::run() {
     SDL_Event event;
+    bool placingTower = false;          // 是否在"选塔位置"的放置模式
     while (running) {
-        // 处理事件
+                                    // 🐲🐲🐲处理事件🐲🐲🐲
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-                running = false;
+            if (event.type == SDL_EVENT_QUIT) running = false;
+
+            bool onTower = placeTowerBtn.HandleEvent(event);   // 点了放塔按钮？
+            bool onMon   = spawnMonsterBtn.HandleEvent(event); // 点了放怪按钮？
+            if (onTower) placingTower = true;                   // 进放置模式
+            if (onMon)   player.spawnMonster(map.getPath()[0].x, map.getPath()[0].y);  // 出生点出怪
+
+            // 放置模式下，点地图空白处放塔（点按钮那一下不算）
+            if (placingTower && event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && !onTower && !onMon) {
+                player.placeTower(event.button.x, event.button.y);
+                placingTower = false;
             }
         }
-
         //让怪沿路径走
         float dt = 0.016f;                     // 1/60 秒每帧
         for (auto m : player.monsters) {
@@ -200,7 +207,8 @@ void GameUI::run() {
             SDL_FRect rect = { p.x - 8, p.y - 8, 16, 16 };
             SDL_RenderFillRect(renderer, &rect);
         }
-
+        placeTowerBtn.Render(renderer);
+        spawnMonsterBtn.Render(renderer);
         SDL_RenderPresent(renderer);
 
         SDL_Delay(16);   // 固定 1/60 喵
