@@ -1,5 +1,5 @@
 #include "Map.h"
-#include "../third_party/json.hpp"
+#include "../../../third_party/json.hpp"
 #include <fstream>
 #include <iostream>
 

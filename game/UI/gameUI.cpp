@@ -4,7 +4,7 @@
 
 
 
-// 画血条（⚡⚡⚡自由函数，备用；以后接进 run
+// 画血条（⚡⚡⚡自由函数，备用；以后接进 run       renderer是渲染器
 void drawHealthBar(SDL_Renderer* renderer, int x, int y, int w, int h, float hpPercent) {
     // 限制一下百分比
     if (hpPercent < 0.0f) hpPercent = 0.0f;
@@ -33,7 +33,17 @@ void drawHealthBar(SDL_Renderer* renderer, int x, int y, int w, int h, float hpP
     SDL_RenderRect(renderer, &bgRect);   // ← SDL3画边框
 }
 
+void drawExistingGoldCoins(SDL_Renderer* renderer,int x,int y,int w,int h){
+    SDL_FRect boxRect = { (float)x, (float)y, (float)w, (float)h };  // 用参数拼出矩形
+    // 背景（暗金色调）
+    SDL_SetRenderDrawColor(renderer, 50, 40, 0, 255);
+    SDL_RenderFillRect(renderer, &boxRect);
 
+    // 金色边框
+    SDL_SetRenderDrawColor(renderer, 255, 215, 0, 255);  // 金色
+    SDL_RenderRect(renderer, &boxRect);
+
+}
 
 
 bool Button::HandleEvent(const SDL_Event& e) {
