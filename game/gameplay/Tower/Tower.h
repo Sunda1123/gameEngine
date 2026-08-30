@@ -3,7 +3,9 @@
 #include <vector>
 #include "../Monster/Monster.h"
 
-enum class TowerType { Arrow, Cannon, Magic, Ice ,Tar};
+class Player;   // 前置声明：act 只用到 Player&，.cpp 里再 include 完整定义（防循环 include）
+
+enum class TowerType { Arrow, Cannon, Magic, Ice ,Tar,Gold};
 
 class Tower {
 
@@ -25,7 +27,8 @@ public:
     explicit Tower(TowerType type, float x, float y);        //explicit防止构造函数进行隐式转换，虽然三参没必要，但加上更严谨
     virtual ~Tower();                 //virtual析构对应Tower
     virtual void update(float dt);                          //帧率（u 跟 v能不能四啊，率跟陆💩）
-    virtual void attack() = 0;        //attack的动作纯虚
+    virtual void attack() {}          //攻击动作：攻击塔 override；经济塔不攻击，给默认空壳
+    virtual void act(Player& player, float dt);   //每帧行为：攻击塔打怪 / 经济塔产钱（多态行为）
     void upgrade();            //升级
     bool canFire() const;      //能不能开火，不能整成无限火力卡死我
     void resetCooldown();          //重置攻击冷却

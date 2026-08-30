@@ -41,3 +41,14 @@ bool Player::spawnMonster(float x, float y) {
     monsters.push_back(new OrdinaryMonster(x, y));
     return true;
 }
+
+// 基地挨打：血是 Player 的私有财产，只有这个 public 方法能改（封装！）
+void Player::takeBaseDamage(int dmg) {
+    baseHealth -= dmg;
+    if (baseHealth < 0) baseHealth = 0;   // 血不下穿 0
+}
+
+// 加钱：钱是 Player 的私有财产，加钱走 public 入口
+void Player::addGold(int amount) {
+    gold += amount;
+}

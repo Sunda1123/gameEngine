@@ -1,4 +1,5 @@
 #include "Tower.h"
+#include "../Player/Player.h"   // act 要用 player.monsters（怪都在 Player 手里）
 
 
 Tower::Tower(TowerType type, float x, float y)   //侯捷P39可以回顾构造函数，赋初始值，建立类的不变量
@@ -43,6 +44,20 @@ Monster* Tower::findTarget(const std::vector<Monster*>& monsters) {
 
 void Tower::update(float dt) {
     if (cooldown > 0.f) cooldown -= dt;
+}
+
+
+// 每帧行为（默认=攻击塔的打怪逻辑，从 GameUI 搬进来收编）
+// GoldTower 会 override 这个改成"产钱"—— 这就是多态行为
+void Tower::act(Player& player, float dt) {
+    update(dt);                       // 冷却倒数
+    if (canFire()) {
+        Monster* target = findTarget(player.monsters);   // 索敌（怪在 Player 手里）
+        if (target) {
+            target->takeDamage(getDamage());   // 开火打怪
+            resetCooldown();
+        }
+    }
 }
 
 

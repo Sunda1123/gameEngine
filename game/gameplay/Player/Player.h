@@ -23,6 +23,8 @@ public:
     int getGold() const { return gold; }
     int getMaxBaseHealth() const { return maxBaseHealth; }
     int getBaseHealth() const { return baseHealth; }
+    void takeBaseDamage(int dmg);   // 基地挨打：血归 Player 管，只有它能改
+    void addGold(int amount);       // 加钱：经济塔产钱 / 以后杀怪给钱都走这个
 };
 
 
