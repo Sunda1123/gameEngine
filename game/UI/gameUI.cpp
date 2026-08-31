@@ -74,7 +74,8 @@ void GameUI::update(float dt){
         }
 
         // 塔自己干活：攻击塔打怪、经济塔产钱（行为收进 Tower::act，多态统一）
-        for (auto t : player.towers) {
+        // unique_ptr 不能拷贝，用 auto& 引用遍历
+        for (auto& t : player.towers) {
             t->act(player, dt);
         }
 
@@ -105,7 +106,7 @@ void GameUI::render(){
         map.render(renderer);
 
         // 画塔（蓝色方块）
-        for (auto t : player.towers) {
+        for (auto& t : player.towers) {
             SDL_FPoint p = t->getPos();
             SDL_SetRenderDrawColor(renderer, 50, 100, 255, 255);
             SDL_FRect rect = { p.x - 10, p.y - 10, 20, 20 };

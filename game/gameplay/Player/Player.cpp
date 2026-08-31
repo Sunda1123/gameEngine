@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "../Tower/ArrowTower.h"
+#include "../Tower/AllTowers.h"   // 所有塔的总入口（一行搞定，不用逐个 include）
 #include "../Monster/OrdinaryMonster.h"
 #include "../Monster/Monster.h"
 #include "../Map/Map.h"
@@ -19,8 +19,8 @@ void Player::initStats() {
 
                                     //🐬这点得把那点塔和怪的数据写表带过来
 Player::~Player() {
-    for (Tower* t : towers) delete t;
-    for (Monster* m : monsters) delete m;
+    // 塔不用管了：towers 是 unique_ptr，自己会 delete（RAII）
+    for (Monster* m : monsters) delete m;   // 怪还是裸指针，得手动清
 }
 
 
@@ -29,7 +29,26 @@ bool Player::placeTower(float x, float y) {
     if (gold < cost) return false;
 
     gold -= cost;
-    towers.push_back(new ArrowTower(x, y));  // 暂时默认放箭塔
+    switch (towerType) {
+        case TowerType::Arrow:
+            towers.push_back(std::make_unique<ArrowTower>(x, y));
+            break;
+        case TowerType::Cannon:
+            towers.push_back(std::make_unique<CannonTower>(x, y));
+            break;
+        case TowerType::Magic:
+            towers.push_back(std::make_unique<MagicTower>(x, y));
+            break;
+        case TowerType::Ice:
+            towers.push_back(std::make_unique<IceTower>(x, y));
+            break;
+        case TowerType::Tar:
+            towers.push_back(std::make_unique<TarTower>(x, y));
+            break;
+        case TowerType::Gold:
+            towers.push_back(std::make_unique<GoldTower>(x, y));
+            break;
+    }
     return true;
 }
 

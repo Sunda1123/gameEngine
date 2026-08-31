@@ -1,4 +1,5 @@
 #include <vector>
+#include <memory>   // unique_ptr（塔归它管，RAII）
 #include "../Map/Map.h"
 #include "../Tower/Tower.h"
 #include "../Monster/Monster.h"
@@ -11,10 +12,11 @@ private:
     int gold;       //现有金币
     int maxBaseHealth;      //基地血量，也是玩家血量，到时候得画个血条
     int baseHealth;
+    TowerType towerType = TowerType::Arrow;   // 当前选中的塔类型（默认箭塔，GameUI 可改）
 public:
     Player();
     ~Player();
-    std::vector<Tower*> towers;
+    std::vector<std::unique_ptr<Tower>> towers;   // 塔归 unique_ptr 管（RAII，自动释放）
     std::vector<Monster*> monsters;
 
     bool placeTower(float x, float y);        // 花钱放塔
@@ -25,6 +27,7 @@ public:
     int getBaseHealth() const { return baseHealth; }
     void takeBaseDamage(int dmg);   // 基地挨打：血归 Player 管，只有它能改
     void addGold(int amount);       // 加钱：经济塔产钱 / 以后杀怪给钱都走这个
+    void setTowerType(TowerType t) { towerType = t; }   // 选塔（GameUI 点按钮切换）
 };
 
 

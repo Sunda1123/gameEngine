@@ -9,7 +9,7 @@ Tower::Tower(TowerType type, float x, float y)   //侯捷P39可以回顾构造�
     level(1),
      slowFactor(0.f)
 {
-    // 具体数值由各派生塔构造函数设置（KingdomRush 风格）
+    // 具体数值由各派生塔构造函数设置
 }
 
 Tower::~Tower() = default; //析构调用

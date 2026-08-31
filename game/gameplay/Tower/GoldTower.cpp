@@ -2,7 +2,7 @@
 #include "../Player/Player.h"   // act 里要 player.addGold
 
 GoldTower::GoldTower(float x, float y) : Tower(TowerType::Gold, x, y) {
-    fireRate = 2.0f;
+    fireRate = 2.0f; cost = 50;
     cooldown = fireRate;   
 }
 
