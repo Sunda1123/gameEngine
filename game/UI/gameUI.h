@@ -15,7 +15,13 @@ private:
     Player        player;     // 玩家：放塔/放怪都喊它（创建具体类收在 Player 里，GameUI 只依赖基类）
     bool          running;    // 游戏还跑不跑
     bool          placingTower  = false;   //放置模式标志
-    Button        placeTowerBtn;    // 放塔按钮（UI 零件，属于 GameUI）
+    Button        placeArrowTowerBtn;   // 放箭塔按钮
+    Button        placeCannonTowerBtn;  // 炮塔
+    Button        placeMagicTowerBtn;  //法塔
+    Button        placeIceTowerBtn;  // 冰塔
+    Button        placeTarTowerBtn;  // 焦油塔
+    Button        placeGoldTowerBtn;  // 金币塔
+    Button        surchPlaceTowerBtn;   //检索放塔按钮
     Button        spawnMonsterBtn;  // 放怪按钮
 
 public:
@@ -25,5 +31,6 @@ public:
     void update(float dt);//逻辑更新
     void processEvents();//处理事件
     void run(); // 主循环
+    bool occupy(int x, int y);
 
 };

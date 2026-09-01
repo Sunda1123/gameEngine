@@ -21,13 +21,11 @@ struct Tile {
 class Map {
 public:
     Map() = default;
-
     bool loadFromJson(const std::string& filepath);           //Map.h中完成功能🐲
-    bool isBuildable(int x, int y) const;                     //Map.h中完成功能🐲
     const std::vector<SDL_FPoint>& getPath() const { return pathPoints; }
     void render(SDL_Renderer* renderer) const;                //Map.h中完成功能🐲
-
-
+    bool isBuildable(int x, int y) const;                     //能建 = 空地且没被占（实现在 Map.cpp）
+    bool occupy(int x, int y);                                //占一个格子（放塔后调用，防叠塔）
 
     int getWidth() const { return width; }          //Map.cpp中width调用🚑
     int getHeight() const { return height; }        //Map.cpp中height调用🚑

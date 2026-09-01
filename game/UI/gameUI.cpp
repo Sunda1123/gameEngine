@@ -31,8 +31,14 @@ GameUI::GameUI() {
         SDL_Log("地图加载失败！请检查 game/data/filepath.json 是否存在。");
         exit(1);
     }
-    placeTowerBtn.setRect({650, 20, 120, 40});    // 放塔按钮
-    spawnMonsterBtn.setRect({650, 70, 120, 40});  // 放怪按钮
+    surchPlaceTowerBtn.setRect({760, 20, 120, 40});    // 选择放塔按钮
+    placeArrowTowerBtn.setRect({650, 70, 120, 40});    // 放箭塔按钮
+    placeCannonTowerBtn.setRect({650, 120, 120, 40});    // 放炮塔按钮
+    placeMagicTowerBtn.setRect({650, 170, 120, 40});    // 放法塔按钮
+    placeIceTowerBtn.setRect({650, 220, 120, 40});    // 放冰塔按钮
+    placeTarTowerBtn.setRect({650, 270, 120, 40});    // 放焦油塔按钮
+    placeGoldTowerBtn.setRect({650, 320, 120, 40});    // 放金币塔按钮
+    spawnMonsterBtn.setRect({760, 70, 120, 40});  // 放怪按钮  后边也得拓开，但等我放塔的找到最好的方式再拓😸
 
 
     running = true;
@@ -47,25 +53,50 @@ GameUI::~GameUI() {
     SDL_Quit();
 }
 
+
+// （occupy 是 Map 的活，已放回 Map.cpp——GameUI 只负责调用 map.occupy，不碰格子细节）
+
+
 //处理事件
-void GameUI::processEvents()
-{
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) running = false;
+void GameUI::processEvents() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_EVENT_QUIT) running = false;
 
-            bool onTower = placeTowerBtn.HandleEvent(event);   // 点了放塔按钮？
-            bool onMon   = spawnMonsterBtn.HandleEvent(event); // 点了放怪按钮？
-            if (onTower) placingTower = true;                   // 进放置模式
-            if (onMon)   player.spawnMonster(map.getPath()[0].x, map.getPath()[0].y);  // 出生点出怪
+        // ① 6 个塔按钮：每个【独立】变量名！（这是你刚才炸的地方）
+        bool onArrow  = placeArrowTowerBtn.HandleEvent(event);
+        bool onCannon = placeCannonTowerBtn.HandleEvent(event);
+        bool onMagic  = placeMagicTowerBtn.HandleEvent(event);
+        bool onIce    = placeIceTowerBtn.HandleEvent(event);
+        bool onTar    = placeTarTowerBtn.HandleEvent(event);
+        bool onGold   = placeGoldTowerBtn.HandleEvent(event);
+        bool onMon    = spawnMonsterBtn.HandleEvent(event);
 
-            // 放置模式下，点地图空白处放塔（点按钮那一下不算）
-            if (placingTower && event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && !onTower && !onMon) {
-                player.placeTower(event.button.x, event.button.y);
-                placingTower = false;
+        // ② 点哪个塔按钮 → 选那种塔 + 进放置模式
+        if (onArrow)  { player.setTowerType(TowerType::Arrow);  placingTower = true; }
+        if (onCannon) { player.setTowerType(TowerType::Cannon); placingTower = true; }
+        if (onMagic)  { player.setTowerType(TowerType::Magic);  placingTower = true; }
+        if (onIce)    { player.setTowerType(TowerType::Ice);    placingTower = true; }
+        if (onTar)    { player.setTowerType(TowerType::Tar);    placingTower = true; }
+        if (onGold)   { player.setTowerType(TowerType::Gold);   placingTower = true; }
+        if (onMon)    { player.spawnMonster(map.getPath()[0].x, map.getPath()[0].y); }
+
+        // ③ 放置模式：点地图 → 放当前选中的塔
+        if (placingTower && event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+            int col = event.button.x / map.getTileSize();   // 像素 → 格子
+            int row = event.button.y / map.getTileSize();
+            if (map.isBuildable(col, row)) {
+                float cx = col * map.getTileSize() + map.getTileSize()/2.0f;  // 格子中心
+                float cy = row * map.getTileSize() + map.getTileSize()/2.0f;
+                if (player.placeTower(cx, cy)) {
+                    map.occupy(col, row);   // 占格
+                }
             }
+            placingTower = false;
         }
+    }
 }
+
 
 //逻辑更新
 void GameUI::update(float dt){
@@ -128,7 +159,14 @@ void GameUI::render(){
         drawHealthBar(renderer, 20, 60, 150, 20,
                       (float)player.getBaseHealth() / (float)player.getMaxBaseHealth());
 
-        placeTowerBtn.Render(renderer);
+        // 右侧塔按钮栏（surch 备用 + 6 塔 + 放怪）
+        surchPlaceTowerBtn.Render(renderer);
+        placeArrowTowerBtn.Render(renderer);
+        placeCannonTowerBtn.Render(renderer);
+        placeMagicTowerBtn.Render(renderer);
+        placeIceTowerBtn.Render(renderer);
+        placeTarTowerBtn.Render(renderer);
+        placeGoldTowerBtn.Render(renderer);
         spawnMonsterBtn.Render(renderer);
         SDL_RenderPresent(renderer);
 

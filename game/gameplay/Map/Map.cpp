@@ -57,21 +57,27 @@ bool Map::loadFromJson(const std::string& filepath) {
         });
     }
     return true;
+
+
+
+
 }
 
 
 
-
-bool Map::isBuildable(int x, int y) const                //⚠️后边补上塔用上的地方不能再用了
+bool Map::isBuildable(int x, int y) const 
 {
     if (x < 0 || y < 0 || x >= width || y >= height) return false;
 
-    TileType type = at(x, y).type;
-
-    return type == TileType::BUILDABLE;
+    return at(x, y).type == TileType::BUILDABLE && !at(x, y).occupied;
 }
 
-
+// 占一个格子：能建才占（放塔后调它，防止两塔叠格）
+bool Map::occupy(int x, int y) {
+    if (!isBuildable(x, y)) return false;
+    at(x, y).occupied = true;
+    return true;
+}
 
 
 void Map::render(SDL_Renderer* renderer) const
