@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "../Tower/AllTowers.h"   // 所有塔的总入口（一行搞定，不用逐个 include）
+#include "../Tower/TowerFactory.h"   // 造塔走名册工厂，Player 不用再认识具体塔
 #include "../Monster/OrdinaryMonster.h"
 #include "../Monster/Monster.h"
 #include "../Map/Map.h"
@@ -25,32 +25,23 @@ Player::~Player() {
 
 
 bool Player::placeTower(float x, float y) {
-    int cost = 100;  // 先写死100，后面再做成表
-    if (gold < cost) return false;
+    // 造塔走名册：让 Factory 按当前选中类型造（switch 六连已送进各塔的报名段）（真费事）
+    auto t = TowerFactory::create(towerType, x, y);
+    if (!t) return false;   // 名册没这座塔（没报名/类型无效）→ 直接失败，钱都不扣
 
+    int cost = t->getCost();   // 价格跟着塔走：每座塔在它自己构造函数里报的价（单一数据源）
+    if (gold < cost) return false;
     gold -= cost;
-    switch (towerType) {
-        case TowerType::Arrow:
-            towers.push_back(std::make_unique<ArrowTower>(x, y));
-            break;
-        case TowerType::Cannon:
-            towers.push_back(std::make_unique<CannonTower>(x, y));
-            break;
-        case TowerType::Magic:
-            towers.push_back(std::make_unique<MagicTower>(x, y));
-            break;
-        case TowerType::Ice:
-            towers.push_back(std::make_unique<IceTower>(x, y));
-            break;
-        case TowerType::Tar:
-            towers.push_back(std::make_unique<TarTower>(x, y));
-            break;
-        case TowerType::Gold:
-            towers.push_back(std::make_unique<GoldTower>(x, y));
-            break;
-    }
+
+    towers.push_back(std::move(t));   // unique_ptr 不能拷贝，用 move 移交
     return true;
 }
+
+void Player::addGold(int amount) {
+    gold += amount;
+}
+
+// 加钱：钱是 Player 的私有财产，加钱走 public 入口
 
 bool Player::spawnMonster(float x, float y) {
     int cost = 50;   // 先写死50
@@ -65,9 +56,4 @@ bool Player::spawnMonster(float x, float y) {
 void Player::takeBaseDamage(int dmg) {
     baseHealth -= dmg;
     if (baseHealth < 0) baseHealth = 0;   // 血不下穿 0
-}
-
-// 加钱：钱是 Player 的私有财产，加钱走 public 入口
-void Player::addGold(int amount) {
-    gold += amount;
 }

@@ -63,7 +63,7 @@ void GameUI::processEvents() {
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_EVENT_QUIT) running = false;
 
-        // ① 6 个塔按钮：每个【独立】变量名！（这是你刚才炸的地方）
+        // 6 个塔按钮：每个【独立】变量名！（这是你刚才炸的地方）
         bool onArrow  = placeArrowTowerBtn.HandleEvent(event);
         bool onCannon = placeCannonTowerBtn.HandleEvent(event);
         bool onMagic  = placeMagicTowerBtn.HandleEvent(event);
@@ -72,7 +72,7 @@ void GameUI::processEvents() {
         bool onGold   = placeGoldTowerBtn.HandleEvent(event);
         bool onMon    = spawnMonsterBtn.HandleEvent(event);
 
-        // ② 点哪个塔按钮 → 选那种塔 + 进放置模式
+        //  点哪个塔按钮 → 选那种塔 + 进放置模式
         if (onArrow)  { player.setTowerType(TowerType::Arrow);  placingTower = true; }
         if (onCannon) { player.setTowerType(TowerType::Cannon); placingTower = true; }
         if (onMagic)  { player.setTowerType(TowerType::Magic);  placingTower = true; }
@@ -81,7 +81,7 @@ void GameUI::processEvents() {
         if (onGold)   { player.setTowerType(TowerType::Gold);   placingTower = true; }
         if (onMon)    { player.spawnMonster(map.getPath()[0].x, map.getPath()[0].y); }
 
-        // ③ 放置模式：点地图 → 放当前选中的塔
+        // 放置模式：点地图 → 放当前选中的塔
         if (placingTower && event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
             int col = event.button.x / map.getTileSize();   // 像素 → 格子
             int row = event.button.y / map.getTileSize();
