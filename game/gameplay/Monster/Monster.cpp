@@ -89,7 +89,8 @@ void Monster::takeDamage(float amount)
 }
 
 void Monster::onDeath() {
-    // 默认：死了就没了。特殊怪（分裂/爆炸/毒）以后 override 这里
+    // 默认：死了就没了
+    // TODO: 特殊怪的 onDeath 还没 override（Split 分裂 / Bom 爆炸 / Poison 毒）
 }
 
 

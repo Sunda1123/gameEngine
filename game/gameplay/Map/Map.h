@@ -26,6 +26,8 @@ public:
     void render(SDL_Renderer* renderer) const;                //Map.h中完成功能🐲
     bool isBuildable(int x, int y) const;                     //能建 = 空地且没被占（实现在 Map.cpp）
     bool occupy(int x, int y);                                //占一个格子（放塔后调用，防叠塔）
+    bool isOccupied(int x, int y) const;                      //这格被占了没（撤销要查）
+    bool release(int x, int y);                               //释放一个格子（撤销放塔用，occupy 的反向）
 
     int getWidth() const { return width; }          //Map.cpp中width调用🚑
     int getHeight() const { return height; }        //Map.cpp中height调用🚑

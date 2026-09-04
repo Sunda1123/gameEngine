@@ -11,7 +11,7 @@ GameUI::GameUI() {
     //  初始化 SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL 初始化失败: %s", SDL_GetError());
-        exit(1);   // 开机失败直接退出（⚡⚡⚡以后可换更优雅的错误处理）
+        exit(1);   // TODO: 换更优雅的错误处理（现在 exit 太粗暴，直接关窗口）
     }
     //  创建窗口
     window = SDL_CreateWindow("地图加载示例", 800, 600, SDL_WINDOW_RESIZABLE);
@@ -38,7 +38,7 @@ GameUI::GameUI() {
     placeIceTowerBtn.setRect({650, 220, 120, 40});    // 放冰塔按钮
     placeTarTowerBtn.setRect({650, 270, 120, 40});    // 放焦油塔按钮
     placeGoldTowerBtn.setRect({650, 320, 120, 40});    // 放金币塔按钮
-    spawnMonsterBtn.setRect({760, 70, 120, 40});  // 放怪按钮  后边也得拓开，但等我放塔的找到最好的方式再拓😸
+    spawnMonsterBtn.setRect({760, 70, 120, 40});  // 放怪按钮 TODO: 以后也要做成多怪选择（等我放塔的方式定下来再拓😸）
 
 
     running = true;

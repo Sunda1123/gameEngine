@@ -14,7 +14,7 @@ void GoldTower::act(Player& player, float dt) {
         resetCooldown();       // 重置计时器 = fireRate
     }
 }
-
+ 
 
 // 报名段：程序启动时自动执行，替 GoldTower 报名
 static bool GoldRegistered = [] {

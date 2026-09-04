@@ -4,5 +4,5 @@
 class PoisonMonster : public Monster {//毒
 public:
     PoisonMonster(float x, float y);
-    // 特殊能力以后在这里加
+    // TODO: 在这里加该怪的特殊能力（毒）
 };

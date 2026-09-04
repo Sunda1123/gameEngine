@@ -20,7 +20,7 @@ public:
     Monster();                                  // 默认构造：先占位（GameUI 成员要用）
     Monster(MonsterType type, float x, float y);
     virtual ~Monster(); 
-    //后边再加怪可以攻击塔
+    // TODO: 加"怪能攻击塔"（现在怪只会沿路走）
     virtual void onDeath();   // 死的时候调用，默认啥也不做
     virtual void update(float dt, const std::vector<SDL_FPoint>& path);   //帧调用减速时间，与当前点和方向
     void takeDamage(float amount);        //受到伤害

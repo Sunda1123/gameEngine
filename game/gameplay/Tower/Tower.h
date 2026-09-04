@@ -34,7 +34,6 @@ public:
     bool canFire() const;      //能不能开火，不能整成无限火力卡死我
     void resetCooldown();          //重置攻击冷却
 
-
     const SDL_FPoint& getPos() const { return pos; }     //拿坐标
     TowerType getType() const { return type; }        //拿防御塔类型
     float getDamage() const { return damage; }         //取攻击伤害，灌灌伤，骗骗花
@@ -45,7 +44,8 @@ public:
     float getDamageOverTime() const {return damageOverTime; }    //拿持续伤害，给持续伤害塔
     float getBurDuration() const {return burDuration; }   //持续伤害时间
     int getCost() const {return cost; } //拿钱
-    //后边加眩晕，感电（跟链表似的伤害传递但逐级递减），这一加东西Monster那边也得跟着动    
+
+    // TODO: 加眩晕、感电状态（伤害逐级递减传递）；这一加 Monster 那边也得跟着动
     
     Monster* findTarget(const std::vector<Monster*>& monsters);//索敌，找Monster里边的最近的怪
 

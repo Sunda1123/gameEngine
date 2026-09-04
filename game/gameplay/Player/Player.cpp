@@ -24,17 +24,18 @@ Player::~Player() {
 }
 
 
-bool Player::placeTower(float x, float y) {
-    // 造塔走名册：让 Factory 按当前选中类型造（switch 六连已送进各塔的报名段）（真费事）
+// 放塔：钱归这里管（B 方案）。成功返回扣了多少钱（命令撤销要退它），失败返回 0
+int Player::placeTower(float x, float y) {
+    // 造塔走名册：让 Factory 按当前选中类型造（switch 六连已送进各塔的报名段）
     auto t = TowerFactory::create(towerType, x, y);
-    if (!t) return false;   // 名册没这座塔（没报名/类型无效）→ 直接失败，钱都不扣
+    if (!t) return 0;   // 名册没这座塔（没报名/类型无效）→ 失败
 
-    int cost = t->getCost();   // 价格跟着塔走：每座塔在它自己构造函数里报的价（单一数据源）
-    if (gold < cost) return false;
+    int cost = t->getCost();   // 价格跟着塔走（单一数据源）
+    if (gold < cost) return 0; // 钱不够
     gold -= cost;
 
-    towers.push_back(std::move(t));   // unique_ptr 不能拷贝，用 move 移交
-    return true;
+    towers.push_back(std::move(t));
+    return cost;   // ★ 告诉调用方花了多少（Command 靠它 undo 退钱）
 }
 
 void Player::addGold(int amount) {

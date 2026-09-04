@@ -79,6 +79,19 @@ bool Map::occupy(int x, int y) {
     return true;
 }
 
+// 这格被占了没（越界算没占）
+bool Map::isOccupied(int x, int y) const {
+    if (x < 0 || y < 0 || x >= width || y >= height) return false;
+    return at(x, y).occupied;
+}
+
+// 释放一个格子：撤销放塔时清占位（occupy 的反向）
+bool Map::release(int x, int y) {
+    if (x < 0 || y < 0 || x >= width || y >= height) return false;
+    at(x, y).occupied = false;
+    return true;
+}
+
 
 void Map::render(SDL_Renderer* renderer) const
 {

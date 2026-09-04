@@ -5,4 +5,3 @@ int main(int argc, char* argv[]) {
     game.run();    // 主循环（跑到关窗口为止）
     return 0;      // 析构：自动关机（清理资源）
 }
-
