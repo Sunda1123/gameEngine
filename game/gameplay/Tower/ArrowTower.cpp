@@ -5,7 +5,7 @@ ArrowTower::ArrowTower(float x, float y) : Tower(TowerType::Arrow, x, y) {
     damage = 10.f; range = 120.f; fireRate = 0.8f; cost = 80;
 }
 void ArrowTower::attack() {
-    // TODO: 生成箭 projectile，加入世界的子弹列表
+    // 发射已统一在基类 Tower::act（索敌→算方向→塞子弹）；各塔特殊子弹以后再分
     resetCooldown();
 }
 

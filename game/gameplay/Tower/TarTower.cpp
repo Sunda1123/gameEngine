@@ -5,7 +5,7 @@ TarTower::TarTower(float x, float y) : Tower(TowerType::Tar, x, y) {
     damage = 0.f; range = 80.f; fireRate = 2.0f; slowFactor = 0.2f; damageOverTime = 5.0f; burDuration = 3.f; cost = 220;
 }
 void TarTower::attack() {
-    // TODO: 生成箭 projectile，加入世界的子弹列表
+    // 发射已统一在基类 Tower::act（索敌→算方向→塞子弹）；各塔特殊子弹以后再分
     resetCooldown();
 }
 

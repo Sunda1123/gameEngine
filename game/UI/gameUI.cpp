@@ -110,12 +110,21 @@ void GameUI::update(float dt){
             t->act(player, dt);
         }
 
+        // 子弹更新：每帧喊子弹飞 + 自己撞怪（撞到/寿命尽会标记死）
+        for (auto& b : player.bullets){
+            b->update(dt, player.monsters);   // 传怪列表，子弹自己撞
+        }
         // 清理死掉的怪（倒着删，避免迭代器失效）
         for (int i = (int)player.monsters.size() - 1; i >= 0; i--) {
             if (player.monsters[i]->getHp() <= 0) {
                 delete player.monsters[i];
                 player.monsters.erase(player.monsters.begin() + i);
             }
+        }
+
+        for (int i = (int)player.bullets.size()-1; i >= 0; --i){
+            if (player.bullets[i]->isDead())
+            player.bullets.erase(player.bullets.begin() + i); 
         }
 
         // 到终点扣基地血（基地血归 Player 管，GameUI 不碰血数据）
@@ -149,6 +158,14 @@ void GameUI::render(){
             SDL_FPoint p = m->getPos();
             SDL_SetRenderDrawColor(renderer, 220, 50, 50, 255);
             SDL_FRect rect = { p.x - 8, p.y - 8, 16, 16 };
+            SDL_RenderFillRect(renderer, &rect);
+        }
+
+        // 画子弹（黄色小点）
+        for (auto& b : player.bullets) {
+            SDL_FPoint p = b->getPos();
+            SDL_SetRenderDrawColor(renderer, 255, 230, 80, 255);
+            SDL_FRect rect = { p.x - 3, p.y - 3, 6, 6 };
             SDL_RenderFillRect(renderer, &rect);
         }
         // 金币框 + 金币数字（左上角）

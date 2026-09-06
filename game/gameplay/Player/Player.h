@@ -5,6 +5,7 @@
 #include "../Tower/Tower.h"
 #include "../Tower/TowerFactory.h"   // getTowerCost 要问 Factory 要价格
 #include "../Monster/Monster.h"
+#include "../Bullet/Bullet.h"   // bullets 容器要用 Bullet（用别人先打招呼）
 
 
 class Player{
@@ -39,6 +40,7 @@ public:
         auto t = TowerFactory::create(towerType, 0, 0);
         return t ? t->getCost() : 0;   // 空指针保护：名册没有就白送 0
     }
+    std::vector<std::unique_ptr<Bullet>> bullets;   // 子弹归 unique_ptr 管，RAII 自动 delete
 
 };
 

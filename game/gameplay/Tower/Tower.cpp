@@ -1,5 +1,7 @@
 #include "Tower.h"
 #include "../Player/Player.h"   // act 要用 player.monsters（怪都在 Player 手里）
+#include "../Bullet/Bullet.h"   // 发射要用 Bullet
+#include "../../../engine/math/Math2D.h"   // 算方向要用 normalize
 
 
 Tower::Tower(TowerType type, float x, float y)   //侯捷P39可以回顾构造函数，赋初始值，建立类的不变量
@@ -50,16 +52,18 @@ void Tower::update(float dt) {
 // 每帧行为（默认=攻击塔的打怪逻辑，从 GameUI 搬进来收编）
 // GoldTower 会 override 这个改成"产钱"—— 这就是多态行为
 void Tower::act(Player& player, float dt) {
-    update(dt);                       // 冷却倒数
+    update(dt);
     if (canFire()) {
-        Monster* target = findTarget(player.monsters);   // 索敌（怪在 Player 手里）
+        Monster* target = findTarget(player.monsters);   //索敌
         if (target) {
-            target->takeDamage(getDamage());   // 开火打怪
+            // 算方向：塔到目标
+            SDL_FPoint d = { target->getPos().x - pos.x, target->getPos().y - pos.y };
+            // 发射：造子弹塞进 player.bullets
+            player.bullets.push_back(std::make_unique<Bullet>(pos, normalize(d), getDamage()));
             resetCooldown();
         }
     }
 }
-
 
 
 void Tower::upgrade() {
