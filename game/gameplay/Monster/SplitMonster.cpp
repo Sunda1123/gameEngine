@@ -2,5 +2,5 @@
 
 SplitMonster::SplitMonster(float x, float y)
     : Monster(MonsterType::SPLIT, x, y) {
-    hp = 80.f; maxHp = 80.f; baseSpeed = 70.f; speed = 70.f;
+    hp = 80.f; maxHp = 80.f; baseSpeed = 70.f; speed = 70.f; rewardGold = 0;//分裂成小的，小的给钱
 }

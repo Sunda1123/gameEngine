@@ -15,6 +15,7 @@ private:
     Player        player;     // 玩家：放塔/放怪都喊它（创建具体类收在 Player 里，GameUI 只依赖基类）
     bool          running;    // 游戏还跑不跑
     bool          placingTower  = false;   //放置模式标志
+    bool          showTowerMenu = false;   //塔选择菜单展开没（点"选择放塔"开关）
     Button        placeArrowTowerBtn;   // 放箭塔按钮
     Button        placeCannonTowerBtn;  // 炮塔
     Button        placeMagicTowerBtn;  //法塔

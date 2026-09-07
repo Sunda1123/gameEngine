@@ -63,26 +63,41 @@ void GameUI::processEvents() {
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_EVENT_QUIT) running = false;
 
-        // 6 个塔按钮：每个【独立】变量名！（这是你刚才炸的地方）
-        bool onArrow  = placeArrowTowerBtn.HandleEvent(event);
-        bool onCannon = placeCannonTowerBtn.HandleEvent(event);
-        bool onMagic  = placeMagicTowerBtn.HandleEvent(event);
-        bool onIce    = placeIceTowerBtn.HandleEvent(event);
-        bool onTar    = placeTarTowerBtn.HandleEvent(event);
-        bool onGold   = placeGoldTowerBtn.HandleEvent(event);
-        bool onMon    = spawnMonsterBtn.HandleEvent(event);
+        // 记录：这次事件是不是点到了 UI 按钮（点了就不当"点地图放塔"，防误触重置 placingTower）
+        bool clickedUI = false;
 
-        //  点哪个塔按钮 → 选那种塔 + 进放置模式
-        if (onArrow)  { player.setTowerType(TowerType::Arrow);  placingTower = true; }
-        if (onCannon) { player.setTowerType(TowerType::Cannon); placingTower = true; }
-        if (onMagic)  { player.setTowerType(TowerType::Magic);  placingTower = true; }
-        if (onIce)    { player.setTowerType(TowerType::Ice);    placingTower = true; }
-        if (onTar)    { player.setTowerType(TowerType::Tar);    placingTower = true; }
-        if (onGold)   { player.setTowerType(TowerType::Gold);   placingTower = true; }
-        if (onMon)    { player.spawnMonster(map.getPath()[0].x, map.getPath()[0].y); }
+        // "选择放塔"按钮：点一下展开/收起塔菜单（终于不是摆设了）
+        if (surchPlaceTowerBtn.HandleEvent(event)) {
+            showTowerMenu = !showTowerMenu;
+            clickedUI = true;
+        }
 
-        // 放置模式：点地图 → 放当前选中的塔
-        if (placingTower && event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+        // 放怪按钮：常驻，点就出怪
+        if (spawnMonsterBtn.HandleEvent(event)) {
+            player.spawnMonster(map.getPath()[0].x, map.getPath()[0].y);
+            clickedUI = true;
+        }
+
+        // 塔菜单展开时才接收 6 个塔按钮（点哪个→选它+进放置+收起菜单）
+        if (showTowerMenu) {
+            bool onArrow  = placeArrowTowerBtn.HandleEvent(event);
+            bool onCannon = placeCannonTowerBtn.HandleEvent(event);
+            bool onMagic  = placeMagicTowerBtn.HandleEvent(event);
+            bool onIce    = placeIceTowerBtn.HandleEvent(event);
+            bool onTar    = placeTarTowerBtn.HandleEvent(event);
+            bool onGold   = placeGoldTowerBtn.HandleEvent(event);
+            if (onArrow || onCannon || onMagic || onIce || onTar || onGold) clickedUI = true;
+
+            if (onArrow)  { player.setTowerType(TowerType::Arrow);  placingTower = true; showTowerMenu = false; }
+            if (onCannon) { player.setTowerType(TowerType::Cannon); placingTower = true; showTowerMenu = false; }
+            if (onMagic)  { player.setTowerType(TowerType::Magic);  placingTower = true; showTowerMenu = false; }
+            if (onIce)    { player.setTowerType(TowerType::Ice);    placingTower = true; showTowerMenu = false; }
+            if (onTar)    { player.setTowerType(TowerType::Tar);    placingTower = true; showTowerMenu = false; }
+            if (onGold)   { player.setTowerType(TowerType::Gold);   placingTower = true; showTowerMenu = false; }
+        }
+
+        // 放置模式：点地图 → 放当前选中的塔（这次点了 UI 按钮就不算点地图）
+        if (placingTower && !clickedUI && event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
             int col = event.button.x / map.getTileSize();   // 像素 → 格子
             int row = event.button.y / map.getTileSize();
             if (map.isBuildable(col, row)) {
@@ -117,6 +132,7 @@ void GameUI::update(float dt){
         // 清理死掉的怪（倒着删，避免迭代器失效）
         for (int i = (int)player.monsters.size() - 1; i >= 0; i--) {
             if (player.monsters[i]->getHp() <= 0) {
+                player.addGold(player.monsters[i]->getRewardGold());   //怪爆金币，我感觉我的定价高了
                 delete player.monsters[i];
                 player.monsters.erase(player.monsters.begin() + i);
             }
@@ -176,14 +192,16 @@ void GameUI::render(){
         drawHealthBar(renderer, 20, 60, 150, 20,
                       (float)player.getBaseHealth() / (float)player.getMaxBaseHealth());
 
-        // 右侧塔按钮栏（surch 备用 + 6 塔 + 放怪）
+        // 右侧栏：常驻 = 选择放塔 + 放怪；点"选择放塔"才展开 6 塔菜单
         surchPlaceTowerBtn.Render(renderer);
-        placeArrowTowerBtn.Render(renderer);
-        placeCannonTowerBtn.Render(renderer);
-        placeMagicTowerBtn.Render(renderer);
-        placeIceTowerBtn.Render(renderer);
-        placeTarTowerBtn.Render(renderer);
-        placeGoldTowerBtn.Render(renderer);
+        if (showTowerMenu) {
+            placeArrowTowerBtn.Render(renderer);
+            placeCannonTowerBtn.Render(renderer);
+            placeMagicTowerBtn.Render(renderer);
+            placeIceTowerBtn.Render(renderer);
+            placeTarTowerBtn.Render(renderer);
+            placeGoldTowerBtn.Render(renderer);
+        }
         spawnMonsterBtn.Render(renderer);
         SDL_RenderPresent(renderer);
 

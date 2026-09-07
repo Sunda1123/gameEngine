@@ -15,6 +15,7 @@ protected:
     float speed;             // 当前速度 
     int currentWaypoint;     // 下一个目标路点的索引（0 是出生点，初始指向 1）
     float slowTimer;         // 减速剩余时间（秒），> 0 说明正在被减速
+    int rewardGold;          //击杀奖励
 
 public:
     Monster();                                  // 默认构造：先占位（GameUI 成员要用）
@@ -34,6 +35,7 @@ public:
     float getSpeed() const { return speed; }
     MonsterType getType() const { return type; }
     int getWaypointIndex() const { return currentWaypoint; }
+    int getRewardGold() const { return rewardGold; }
 };
 
 
