@@ -1,5 +1,6 @@
 
 #include "Button.h"
+#include "TextRenderer.h"
 
 bool Button::HandleEvent(const SDL_Event& e) {
         // 鼠标是否"按下"且是左键
@@ -40,5 +41,16 @@ void Button::Render(SDL_Renderer* r) {
         SDL_SetRenderDrawColor(r, 255, 110, 70, 255);
     }
     SDL_RenderFillRect(r, &rect_);
+
+    // 有字才画：近似居中
+    // 注意：std::string::size() 数的是【字节】，中文 UTF-8 一个字 = 3 字节，
+    //       所以宽度要按"字数"算（÷3），不然估大 3 倍字就歪左边了
+    if (!label_.empty()) {
+        int chars = (int)label_.size() / 3;   // 咱按钮都是中文，每字 3 字节
+        int textW = chars * fontSize_;        // 中文字宽 ≈ 字号
+        int tx = (int)rect_.x + ((int)rect_.w - textW) / 2;
+        int ty = (int)rect_.y + ((int)rect_.h - fontSize_) / 2;
+        drawTextAt(r, label_, tx, ty, fontSize_, 90, 40, 20);   // 深棕字，衬橙色底
+    }
 }
 

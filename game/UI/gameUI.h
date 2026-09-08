@@ -1,19 +1,14 @@
 #pragma once
-#include <SDL3/SDL.h>
-#include "../gameplay/Map/Map.h"
-#include "../gameplay/Monster/Monster.h"
-#include "../gameplay/Player/Player.h"
-#include "../../engine/UI/Button.h"   // Button 是通用控件，住 engine 层
+#include "../../engine/GameApp.h"       // 引擎壳：窗口+渲染器+run 主循环（发令枪）
+#include "../gameplay/World/World.h"    // 游戏世界：地图+玩家+玩法调度（gameplay 层）
+#include "../../engine/UI/Button.h"     // Button 通用控件，住 engine 层
 
 
-
-class GameUI {
+// GameUI = 继承引擎壳(GameApp)，只填三个钩子 + 塔防界面（按钮）
+// 玩法逻辑在 World（gameplay 层）—— 引擎/游戏/界面 界限清晰
+class GameUI : public GameApp {
 private:
-    SDL_Window*   window;     // 窗口
-    SDL_Renderer* renderer;   // 渲染器
-    Map           map;        // 地图
-    Player        player;     // 玩家：放塔/放怪都喊它（创建具体类收在 Player 里，GameUI 只依赖基类）
-    bool          running;    // 游戏还跑不跑
+    World         world;      // 游戏世界：地图+玩家+每帧玩法调度
     bool          placingTower  = false;   //放置模式标志
     bool          showTowerMenu = false;   //塔选择菜单展开没（点"选择放塔"开关）
     Button        placeArrowTowerBtn;   // 放箭塔按钮
@@ -26,12 +21,11 @@ private:
     Button        spawnMonsterBtn;  // 放怪按钮
 
 public:
-    GameUI();   // 构造：自动开机
-    ~GameUI();  // 析构：自动关机
-    void render();//绘制
-    void update(float dt);//逻辑更新
-    void processEvents();//处理事件
-    void run(); // 主循环
-    bool occupy(int x, int y);
+    GameUI();   // 构造：引擎开机(GameApp 开窗口) + 本类载地图/摆按钮
 
+protected:
+    // 三个钩子：引擎 run 每帧喊，游戏填内容
+    void processEvents() override;   // 收输入（点按钮/点地图）
+    void update(float dt) override;  // 转发玩法给 world
+    void render() override;          // 画塔/怪/子弹/按钮/血条
 };

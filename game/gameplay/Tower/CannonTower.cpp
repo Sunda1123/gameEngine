@@ -5,7 +5,8 @@ CannonTower::CannonTower(float x, float y) : Tower(TowerType::Cannon, x, y) {
     damage = 10.f; range = 120.f; fireRate = 0.8f; cost = 80;
 }
 void CannonTower::attack() {
-    // 发射已统一在基类 Tower::act（索敌→算方向→塞子弹）；各塔特殊子弹以后再分
+    // 发射已统一在基类 Tower::act（索敌→算方向→塞子弹）；各塔特殊子弹以后再分　
+    
     resetCooldown();
 }
 
