@@ -50,12 +50,22 @@ bool Monster::isMoving(const std::vector<SDL_FPoint>& path) const//到了就给�
 
 
 void Monster::update(float dt,const std::vector<SDL_FPoint>& path) {     //运动模块
-    
-    
+
+    // 持续伤害（焦油）：每秒按 dotDps 烧血，时间烧完停（dotTimer 归零）
+    if (dotTimer > 0) {
+        takeDamage(dotDps * dt);     // dt 秒 × 每秒伤害 = 这帧烧多少
+        dotTimer -= dt;
+        if (dotTimer <= 0) { dotTimer = 0; dotDps = 0.f; }   // 烧完清零
+    }
+
     if (slowTimer > 0)      //减速倒计时
     {
         slowTimer -= dt;
-        if (slowTimer == 0) speed = baseSpeed;
+        if (slowTimer <= 0) {     // 用 <= 别用 ==（浮点相减不精确，可能刚好跳过 0）
+            slowTimer = 0;
+            slowStacks = 0;       // 叠层清零（停手就慢慢恢复）
+            speed = baseSpeed;    // 减速结束恢复原速
+        }
     }
 
     if (currentWaypoint >= path.size()) {
@@ -86,6 +96,20 @@ void Monster::takeDamage(float amount)
 {
     hp -= amount;
     if (hp < 0) hp = 0;
+}
+
+// 减速：寒冰叠层（越打越慢）—— 每次命中叠一层，速度按 0.5^层数 递减
+void Monster::applySlow(float factor, float duration) {
+    slowStacks++;                                   // 叠一层：0.5 → 0.25 → 0.125…
+    slowTimer = duration;                           // 续满减速时间（持续冻）
+    speed = baseSpeed * std::pow(factor, slowStacks);
+    if (speed < baseSpeed * 0.3f) speed = baseSpeed * 0.3f;   // 别真冻成 0，留 10% 最低速
+}
+
+// 持续伤害（焦油）：挂上"每秒掉血"。（简化版：刷新持续时间，不叠伤害；要叠伤以后再说）
+void Monster::applyDot(float dps, float duration) {
+    dotDps = dps;
+    dotTimer = duration;
 }
 
 void Monster::onDeath() {

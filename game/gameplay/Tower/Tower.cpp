@@ -59,10 +59,15 @@ void Tower::act(Player& player, float dt) {
             // 算方向：塔到目标
             SDL_FPoint d = { target->getPos().x - pos.x, target->getPos().y - pos.y };
             // 发射：造子弹塞进 player.bullets
-            player.bullets.push_back(std::make_unique<Bullet>(pos, normalize(d), getDamage()));
+            player.bullets.push_back(fireBullet(normalize(d)));
             resetCooldown();
         }
     }
+}
+
+// 基类默认：发普通子弹（派生塔 override 发自己的特殊弹）
+std::unique_ptr<Bullet> Tower::fireBullet(SDL_FPoint dir) {
+    return std::make_unique<Bullet>(pos, dir, getDamage());
 }
 
 

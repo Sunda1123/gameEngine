@@ -1,9 +1,11 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <vector>
+#include <memory>   // unique_ptr（fireBullet 返回用）
 #include "../Monster/Monster.h"
 
 class Player;   // 前置声明：act 只用到 Player&，.cpp 里再 include 完整定义（防循环 include）
+class Bullet;   // 前置声明：fireBullet 返回 unique_ptr<Bullet>，.cpp 里再见完整定义
 
 enum class TowerType { Arrow, Cannon, Magic, Ice ,Tar,Gold};
 
@@ -17,7 +19,8 @@ class Tower {
     float range{};
     float cooldown{};
     float fireRate{};
-    float slowFactor{};
+    float slowFactor{};      // 减速比例（冰塔用）
+    float slowDuration{};    // 减速持续秒数（冰塔用）
     float damageOverTime{};
     int level{};
     float burDuration{};
@@ -30,6 +33,7 @@ public:
     virtual void update(float dt);                          //帧率（u 跟 v能不能四啊，率跟陆💩）
     virtual void attack() {}          //攻击动作：攻击塔 override；经济塔不攻击，给默认空壳
     virtual void act(Player& player, float dt);   //每帧行为：攻击塔打怪 / 经济塔产钱（多态行为）
+    virtual std::unique_ptr<Bullet> fireBullet(SDL_FPoint dir);
     void upgrade();            //升级
     bool canFire() const;      //能不能开火，不能整成无限火力卡死我
     void resetCooldown();          //重置攻击冷却

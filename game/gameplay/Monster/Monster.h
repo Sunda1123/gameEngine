@@ -15,6 +15,9 @@ protected:
     float speed;             // 当前速度 
     int currentWaypoint;     // 下一个目标路点的索引（0 是出生点，初始指向 1）
     float slowTimer;         // 减速剩余时间（秒），> 0 说明正在被减速
+    int slowStacks = 0;      // 减速叠了几层（冰弹连中越冻越慢：寒冰叠层）
+    float dotDps = 0.f;      // 每秒持续伤害（焦油弹挂着烧）
+    float dotTimer = 0.f;    // 持续伤害还剩几秒（>0 = 正在被烧）
     int rewardGold;          //击杀奖励
 
 public:
@@ -26,6 +29,7 @@ public:
     virtual void update(float dt, const std::vector<SDL_FPoint>& path);   //帧调用减速时间，与当前点和方向
     void takeDamage(float amount);        //受到伤害
     void applySlow(float factor, float duration); //减速，被减速时调用
+    void applyDot(float dps, float duration);      //持续伤害（焦油弹命中调）
     bool hasReachedEnd(const std::vector<SDL_FPoint>& path) const; //用来判断怪是否到达了基地，来判定当前是否扣血
     bool isMoving(const std::vector<SDL_FPoint>& path) const; //到头就停，先停下来，再考虑把他拔下来放回库里
 

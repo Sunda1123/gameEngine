@@ -1,6 +1,7 @@
 #include "gameUI.h"
 #include "HUD.h"
 #include "../../engine/UI/HealthBar.h"   // 血条是通用控件，住 engine 层
+#include "../gameplay/Command/PlaceTowerCommand.h"   // 放塔命令（回撤要用，用别人先打招呼）
 #include <cstdlib>   // exit()
 
 
@@ -23,6 +24,7 @@ GameUI::GameUI() : GameApp("地图加载示例", 800, 600) {
     placeTarTowerBtn.setRect({650, 270, 120, 40});    // 放焦油塔按钮
     placeGoldTowerBtn.setRect({650, 320, 120, 40});    // 放金币塔按钮
     spawnMonsterBtn.setRect({760, 70, 120, 40});  // 放怪按钮 TODO: 以后也要做成多怪选择（等我放塔的方式定下来再拓😸）
+    undoBtn.setRect({760, 120, 120, 40});    // 撤销按钮（撤回上一步放塔）
 
     //绑定文字：rect 就是框，字按 rect 居中贴上去（常驻按钮也要字，不然没字怪怪的）
     placeArrowTowerBtn.SetLabel("箭塔",   18);
@@ -34,6 +36,7 @@ GameUI::GameUI() : GameApp("地图加载示例", 800, 600) {
 
     surchPlaceTowerBtn.SetLabel("选择放塔", 18);
     spawnMonsterBtn.SetLabel("放怪", 18);
+    undoBtn.SetLabel("撤销", 18);
     running = true;
 }
 
@@ -64,6 +67,17 @@ void GameUI::processEvents() {
             clickedUI = true;
         }
 
+        // 撤销按钮：撤回上一步放塔（退钱+删塔+清格）
+        if (undoBtn.HandleEvent(event)) {
+            undo();
+            clickedUI = true;
+        }
+
+        // 键盘 U 也能撤销（点按钮之外给个快捷键）
+        if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_U) {
+            undo();
+        }
+
         // 塔菜单展开时才接收 6 个塔按钮（点哪个→选它+进放置+收起菜单）
         if (showTowerMenu) {
             bool onArrow  = placeArrowTowerBtn.HandleEvent(event);
@@ -86,12 +100,14 @@ void GameUI::processEvents() {
         if (placingTower && !clickedUI && event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
             int col = event.button.x / world.map.getTileSize();   // 像素 → 格子
             int row = event.button.y / world.map.getTileSize();
-            if (world.map.isBuildable(col, row)) {
+            // 能建 + 钱够才放（execute 一定成功，history 里的命令都"做过"，撤销才安全）
+            if (world.map.isBuildable(col, row) &&
+                world.player.getGold() >= world.player.getTowerCost()) {
                 float cx = col * world.map.getTileSize() + world.map.getTileSize()/2.0f;  // 格子中心
                 float cy = row * world.map.getTileSize() + world.map.getTileSize()/2.0f;
-                if (world.player.placeTower(cx, cy)) {
-                    world.map.occupy(col, row);   // 占格
-                }
+                // 走"命令模式"：放塔打包成一条命令压进历史，以后能撤销（退钱+删塔+清格）
+                history.push_back(std::make_unique<PlaceTowerCommand>(&world.player, &world.map, cx, cy));
+                history.back()->execute();   // execute 自己干：放塔+扣钱+占格
             }
             placingTower = false;
         }
@@ -128,10 +144,11 @@ void GameUI::render(){
             SDL_RenderFillRect(renderer, &rect);
         }
 
-        // 画子弹（黄色小点）
+        // 画子弹（默认黄色小点；焦油弹会 override 成焦绿色）
         for (auto& b : world.player.bullets) {
             SDL_FPoint p = b->getPos();
-            SDL_SetRenderDrawColor(renderer, 255, 230, 80, 255);
+            SDL_Color c = b->getColor();
+            SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
             SDL_FRect rect = { p.x - 3, p.y - 3, 6, 6 };
             SDL_RenderFillRect(renderer, &rect);
         }
@@ -154,9 +171,17 @@ void GameUI::render(){
             placeGoldTowerBtn.Render(renderer);
         }
         spawnMonsterBtn.Render(renderer);
+        undoBtn.Render(renderer);
         SDL_RenderPresent(renderer);
 
 }
 
 // 主循环不用写：run() 继承自引擎 GameApp（发令枪），自动调上面三个钩子
+
+// 撤销上一步：让栈顶命令"还账"（退钱+删塔+清格），然后弹掉它
+void GameUI::undo() {
+    if (history.empty()) return;   // 没操作可撤（空栈不慌）
+    history.back()->undo();        // 命令自己知道怎么还账
+    history.pop_back();            // 撤完这条就扔
+}
 
