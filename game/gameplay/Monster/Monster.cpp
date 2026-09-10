@@ -2,7 +2,7 @@
 #include <cmath>   // sqrt 用（显式包含，别靠间接）
 
 
-// 默认构造：先造一只普通怪占位（GameUI 里 monster 成员要先有个默认模样）
+// 默认构造：先造一只普通怪占位（GameScene 里 monster 成员要先有个默认模样）
 Monster::Monster()
     : type(MonsterType::ORDINARY),
       pos{0.0f, 0.0f},

@@ -31,15 +31,10 @@ bool Button::HandleEvent(const SDL_Event& e) {
 // TODO: 放置模式下把"可放塔"的格子圈出来高亮（不然路上/已占格都分不清能不能放）
 
 
-    // 画按钮：按下=深红 / 悬停=浅橙 / 普通=橙
+    // 画按钮：自己按状态挑色（按下 / 悬停 / 普通）
 void Button::Render(SDL_Renderer* r) {
-    if (clicked_) {
-        SDL_SetRenderDrawColor(r, 200, 80, 60, 255);
-    } else if (hovered_) {
-        SDL_SetRenderDrawColor(r, 255, 140, 100, 255);
-    } else {
-        SDL_SetRenderDrawColor(r, 255, 110, 70, 255);
-    }
+    SDL_Color bg = clicked_ ? pressColor_ : (hovered_ ? hoverColor_ : normalColor_);
+    SDL_SetRenderDrawColor(r, bg.r, bg.g, bg.b, bg.a);
     SDL_RenderFillRect(r, &rect_);
 
     // 有字才画：近似居中
@@ -50,7 +45,7 @@ void Button::Render(SDL_Renderer* r) {
         int textW = chars * fontSize_;        // 中文字宽 ≈ 字号
         int tx = (int)rect_.x + ((int)rect_.w - textW) / 2;
         int ty = (int)rect_.y + ((int)rect_.h - fontSize_) / 2;
-        drawTextAt(r, label_, tx, ty, fontSize_, 90, 40, 20);   // 深棕字，衬橙色底
+        drawTextAt(r, label_, tx, ty, fontSize_, textColor_.r, textColor_.g, textColor_.b);
     }
 }
 

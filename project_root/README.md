@@ -42,7 +42,7 @@ game.exe         # 运行
 gameEngine/
 ├── engine/UI/        # 通用引擎层：Button / TextRenderer(画字) / HealthBar(血条)
 ├── game/
-│   ├── UI/           # gameUI 主循环 + HUD（金币框）
+│   ├── UI/           # GameScene 主循环 + HUD（金币框）
 │   ├── gameplay/     # Map / Tower / Monster / Player
 │   └── data/         # 地图数据 filepath.json
 └── project_root/     # build.bat + game.exe

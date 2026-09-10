@@ -21,7 +21,7 @@ protected:
     int rewardGold;          //击杀奖励
 
 public:
-    Monster();                                  // 默认构造：先占位（GameUI 成员要用）
+    Monster();                                  // 默认构造：先占位（GameScene 成员要用）
     Monster(MonsterType type, float x, float y);
     virtual ~Monster(); 
     // TODO: 加"怪能攻击塔"（现在怪只会沿路走）

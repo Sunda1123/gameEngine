@@ -1,5 +1,5 @@
 #pragma once
-#include "../../engine/GameApp.h"       // 引擎壳：窗口+渲染器+run 主循环（发令枪）
+#include "../../engine/Scene.h"         // 场景基类：一屏画面（钩子契约在这儿）
 #include "../gameplay/World/World.h"    // 游戏世界：地图+玩家+玩法调度（gameplay 层）
 #include "../../engine/UI/Button.h"     // Button 通用控件，住 engine 层
 #include "../gameplay/Command/Command.h"   // 撤销栈元素：命令基类（放塔具体命令 .cpp 里再 include）
@@ -7,9 +7,9 @@
 #include <vector>
 
 
-// GameUI = 继承引擎壳(GameApp)，只填三个钩子 + 塔防界面（按钮）
-// 玩法逻辑在 World（gameplay 层）—— 引擎/游戏/界面 界限清晰
-class GameUI : public GameApp {
+// GameScene = 游戏场景：一屏塔防画面（继承 Scene）
+// 玩法逻辑在 World（gameplay 层），窗口/主循环在引擎 GameApp 层 —— 三层界限清晰
+class GameScene : public Scene {
 private:
     World         world;      // 游戏世界：地图+玩家+每帧玩法调度
     bool          placingTower  = false;   //放置模式标志
@@ -27,11 +27,9 @@ private:
     void undo();   // 撤回上一步：退钱+删塔+清格（让撤销栈顶命令还账，弹掉它）
 
 public:
-    GameUI();   // 构造：引擎开机(GameApp 开窗口) + 本类载地图/摆按钮
+    GameScene();   // 构造：准备自己这一屏（载地图、摆按钮）—— 窗口归引擎管
 
-protected:
-    // 三个钩子：引擎 run 每帧喊，游戏填内容
-    void processEvents() override;   // 收输入（点按钮/点地图）
-    void update(float dt) override;  // 转发玩法给 world
-    void render() override;          // 画塔/怪/子弹/按钮/血条
+    void processEvents(const SDL_Event& e) override;   // 处理"一个"事件（引擎 poll 好喂进来）
+    void update(float dt) override;                    // 转发玩法给 world
+    void render(SDL_Renderer* renderer) override;      // 画塔/怪/子弹/按钮/血条
 };

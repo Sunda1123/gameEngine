@@ -49,7 +49,7 @@ void Tower::update(float dt) {
 }
 
 
-// 每帧行为（默认=攻击塔的打怪逻辑，从 GameUI 搬进来收编）
+// 每帧行为（默认=攻击塔的打怪逻辑，从 GameScene 搬进来收编）
 // GoldTower 会 override 这个改成"产钱"—— 这就是多态行为
 void Tower::act(Player& player, float dt) {
     update(dt);

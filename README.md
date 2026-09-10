@@ -42,7 +42,7 @@ gameEngine/
 │   ├── UI/           # 通用引擎层：Button / TextRenderer(画字) / HealthBar(血条)
 │   └── math/         # Math2D：向量 length / normalize / dist（头文件库）
 ├── game/
-│   ├── UI/           # gameUI 主循环 + HUD（金币框）
+│   ├── UI/           # GameScene 主循环 + HUD（金币框）
 │   ├── gameplay/     # Map / Monster / Player / Tower / Bullet / Command
 │   └── data/         # 地图数据 filepath.json
 └── project_root/     # build.bat + game.exe

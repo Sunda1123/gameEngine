@@ -4,8 +4,8 @@ bool World::loadMap(const std::string& filepath) {
     return map.loadFromJson(filepath);
 }
 
-// 每帧玩法调度：原 GameUI::update 整段搬进来
-// （GameUI 现在只管窗口/界面，玩法逻辑全归世界）
+// 每帧玩法调度：原 GameScene::update 整段搬进来
+// （GameScene 现在只管窗口/界面，玩法逻辑全归世界）
 void World::update(float dt) {
     // 怪沿路走
     for (auto m : player.monsters) {
