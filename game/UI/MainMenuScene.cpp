@@ -35,13 +35,13 @@ void MainMenuScene::exit() {
 void MainMenuScene::processEvents(const SDL_Event& e) {
     // 事件要转给按钮：悬停/按下的状态更新靠 HandleEvent（不转，按钮就不会变色）
     if (startButton.HandleEvent(e)) {
-        // TODO: 请求切换到游戏场景（等 requestSceneChange 接好线再填）
+        requestSceneChange(SceneType::SinglePlayer);   // 申请切到游戏场景
     }
     if (TeamSetupButton.HandleEvent(e)) {
-        // TODO: 请求切换到队伍配置场景
+        requestSceneChange(SceneType::TeamSetup);      // 还没做：引擎拿到空场景会忽略
     }
     if (SettingsButton.HandleEvent(e)) {
-        // TODO: 请求切换到设置场景
+        requestSceneChange(SceneType::Settings);       // 同上
     }
 }
 

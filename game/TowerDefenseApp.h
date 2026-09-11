@@ -12,4 +12,7 @@ public:
 protected:
     // 引擎问"第一个场景是谁"，这里回答
     std::unique_ptr<Scene> createFirstScene() override;
+
+    // TODO: 引擎问"这个 SceneType 是哪个场景"，这里回答（游戏层才知道有哪些具体场景）
+    std::unique_ptr<Scene> createScene(SceneType type) override;
 };

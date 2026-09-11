@@ -74,6 +74,11 @@ void GameScene::processEvents(const SDL_Event& event) {
         undo();
     }
 
+    // 临时回主菜单：ESC（以后会改成"暂停"，暂停菜单里再选回主菜单）
+    if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_ESCAPE) {
+        requestSceneChange(SceneType::MainMenu);
+    }
+
     // 塔菜单展开时才接收 6 个塔按钮（点哪个→选它+进放置+收起菜单）
     if (showTowerMenu) {
         bool onArrow  = placeArrowTowerBtn.HandleEvent(event);
