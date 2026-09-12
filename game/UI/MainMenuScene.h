@@ -9,8 +9,11 @@ class MainMenuScene : public Scene {
 
     // TODO: 它需要哪些成员？（按钮？renderer？）
     Button startButton;  //开始游戏
+    Button SinglePlayerBtn; //单机选关
+    Button LocalAreaNetworkBtn; //局域网联机
     Button SettingsButton; //设置
     Button TeamSetupButton; //队伍配置
+    bool showGameMenu = false;   // "开始游戏"的子菜单展开没（点一下开/关）
 
 public:
     // TODO: 构造函数要什么参数，你来定

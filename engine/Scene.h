@@ -16,15 +16,22 @@ enum class SceneType {
     LocalAreaNetwork,  // 局域网联机（2v2，同一网络多人对战）（最后阶段的东西） 
     TeamSetup,         // 队伍配置（选单位：怪或者塔）
     Pause,             // 暂停（游戏中暂停菜单）
-    GameOver,          // 失败（基地被推平，你输了）
-    Victory,           // 胜利（对面基地归零，你赢了）
+    GameOver1,          // 单机失败（基地被推平，你输了）
+    Victory1,           // 单机胜利（对面基地归零，你赢了）
+    GameOver2,          // 局域网对战失败（基地被推平，你输了）
+    Victory2,           // 局域网对战胜利（对面基地归零，你赢了）
     Settings,          // 设置（音量/分辨率/按键）
     Credits,           // 制作人员（致谢/关于）
 };
 
 class Scene {
 
+SceneType type_;
 public:
+
+    explicit Scene (SceneType type) : type_(type){}
+    SceneType getType() const{return type_; }
+
     virtual ~Scene() = default;
 
     // TODO: 进入这个场景时做什么

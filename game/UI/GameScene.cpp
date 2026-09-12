@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "HUD.h"
+#include "../../engine/SceneRegistry.h"   // 报名用
 #include "../../engine/UI/HealthBar.h"   // 血条是通用控件，住 engine 层
 #include "../gameplay/Command/PlaceTowerCommand.h"   // 放塔命令（回撤要用，用别人先打招呼）
 #include <cstdlib>   // exit()
@@ -9,7 +10,7 @@
 
 //⚡构造函数（开机）
 // 构造：窗口/渲染器归引擎 GameApp 管，场景只管"我这一屏要准备什么"：载地图+摆按钮
-GameScene::GameScene() {
+GameScene::GameScene() : Scene(SceneType::SinglePlayer) {
     //  加载地图（地图归 World 管）
     //  ⚠️ 相对路径是相对"运行目录"（project_root）的：../ 出去到 gameEngine 根，再进 game/data
     if (!world.loadMap("../game/data/filepath.json")) {
@@ -79,6 +80,11 @@ void GameScene::processEvents(const SDL_Event& event) {
         requestSceneChange(SceneType::MainMenu);
     }
 
+    // 调试键 K：直接把基地血打空（不然要等 100 次才能看到结算界面）
+    if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_K) {
+        world.player.takeBaseDamage(world.player.getMaxBaseHealth());
+    }
+
     // 塔菜单展开时才接收 6 个塔按钮（点哪个→选它+进放置+收起菜单）
     if (showTowerMenu) {
         bool onArrow  = placeArrowTowerBtn.HandleEvent(event);
@@ -118,6 +124,12 @@ void GameScene::processEvents(const SDL_Event& event) {
 //逻辑更新：玩法全在 World 里，界面只负责喊它
 void GameScene::update(float dt){
     world.update(dt);
+
+    // 胜负判定：基地血空了 → 申请切到结算界面
+    // （玩法层只报告事实，跳不跳由界面层决定 —— GameScene 就是那个"界面层"）
+    if (world.player.getBaseHealth() <= 0) {
+        requestSceneChange(SceneType::GameOver1);   // 单机局的失败
+    }
 }
 
 
@@ -184,3 +196,12 @@ void GameScene::undo() {
     history.back()->undo();        // 命令自己知道怎么还账
     history.pop_back();            // 撤完这条就扔
 }
+
+// ===== 报名（自注册）=====
+// 这一行就是"加新场景"的全部成本：场景自己报名，别人一个字都不用改
+static bool regGameScene = [] {
+    SceneRegistry::reg(SceneType::SinglePlayer, [](SceneType) {
+        return std::make_unique<GameScene>();
+    });
+    return true;
+}();
